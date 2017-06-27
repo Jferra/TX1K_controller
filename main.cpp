@@ -6,8 +6,8 @@
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
-    wiringPiSetupGpio();
     std::cout << "Setting up GPIO" << std::endl;
+    wiringPiSetup();    // Setup Pins using wiringPi mapping
 
     setupColorThread();
 

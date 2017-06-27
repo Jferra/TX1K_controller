@@ -1,17 +1,13 @@
 //
 // Created by JGMR on 17/06/2017.
 //
-
+#include <iostream>
 #include <cstdint>
 #include "color.h"
 
 #define NUM_LED_COLUMNS (4)
 #define NUM_LED_ROWS (1)
 #define NUM_COLORS (3)
-
-//#define RED_PIN (2)     //Launchpad
-//#define GREEN_PIN (4)   //Launchpad
-//#define BLUE_PIN (3)    //Launchpad
 
 #define RED_PIN (0)   // Raspberry
 #define GREEN_PIN (2) // Raspberry
@@ -35,33 +31,33 @@ void setupColorThread() {
     setupPins();
 
     // init global variables
-    next_color_scan = millis() + 1;
+    //static uint8_t next_color_scan = millis() + 1;
     led_index = 0;
     color_index = 0;
 
-    uint8_t i = 0;
-    uint8_t j = 0;
-
-    // Initialize the LED display array
-    for(i; i < NUM_LED_COLUMNS; i++)
-    {
-        for(j; j < NUM_COLORS; j++)
-        {
-            LED_buffer[i][j] = false;
-        }
-    }
-    // Set the first LED in the buffer on
-    LED_buffer[0][0] = true;
-
-
     // Set LEDs default colors
-    int colors[4] = { RED_COLOR, MAGENTA_COLOR, BLUE_COLOR, WHITE_COLOR };
+    //int colors[4] = { RED_COLOR, MAGENTA_COLOR, BLUE_COLOR, WHITE_COLOR };
     setLEDColors(colors);
 
+    std::cout << "Setup Colors completed." << std::endl;
 
-    //Serial.println("Setup Complete.");
+    while(1){
 
-    //todo launch scan() in a infinite loop
+        scan();
+
+        if(led_index == 4){
+            led_index = 0;
+        }
+        if(color_index == 2){
+            led_index++;
+        }
+
+        color_index++;
+
+        if(color_index == 3){
+            color_index = 0;
+        }
+    }
     //todo add listeners to receive commands
 }
 
@@ -92,7 +88,6 @@ static void setupPins()
         // with nothing driven by default
         digitalWrite(colorpins[i], 0);
     }
-
 }
 
 /**
@@ -101,53 +96,30 @@ static void setupPins()
  */
 static void scan()
 {
-    static uint8_t current = 0; // current LED
-    uint8_t val;
-    uint8_t i, j;
-
-
     // Select a column
-    digitalWrite(ledcolumnpins[current], LOW);
+    digitalWrite(ledcolumnpins[led_index], LOW);
 
     // write the row pins
-    for(i = 0; i < NUM_LED_COLUMNS; i++)
+    if(LED_colors[led_index][color_index])
     {
-        for(j = 0; j < NUM_COLORS; j++)
-        {
-            if(LED_buffer[current][j] && LED_colors[current][j])
-            {
-                switch(j){
-                    //Red
-                    case 0:
-                        digitalWrite(RED_PIN, HIGH);
-                        break;
-                        //Green
-                    case 1:
-                        digitalWrite(GREEN_PIN, HIGH);
-                        break;
-                        //Blue
-                    case 2:
-                        digitalWrite(BLUE_PIN, HIGH);
-                        break;
-                }
-            }
+        switch(color_index){
+            case 0:
+                digitalWrite(RED_PIN, HIGH);
+                break;
+            case 1:
+                digitalWrite(GREEN_PIN, HIGH);
+                break;
+            case 2:
+                digitalWrite(BLUE_PIN, HIGH);
+                break;
         }
     }
 
-    digitalWrite(ledcolumnpins[current], HIGH);	//deselect current column
+    delay(1);
 
-    for(i = 0; i < NUM_COLORS; i++)
-    {
-        digitalWrite(colorpins[i], LOW);	// "deselect" all colors
-    }
+    digitalWrite(ledcolumnpins[led_index], HIGH);	//deselect current column
 
-    // Move on to the next column
-    current++;
-    if (current >= NUM_LED_COLUMNS)
-    {
-        current = 0;
-    }
-
+    digitalWrite(colorpins[color_index], LOW);
 }
 
 /**
