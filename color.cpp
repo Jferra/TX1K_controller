@@ -13,9 +13,9 @@
 //#define GREEN_PIN (4)   //Launchpad
 //#define BLUE_PIN (3)    //Launchpad
 
-#define RED_PIN (11)   // Raspberry
-#define GREEN_PIN (13) // Raspberry
-#define BLUE_PIN (15)  // Raspberry
+#define RED_PIN (0)   // Raspberry
+#define GREEN_PIN (2) // Raspberry
+#define BLUE_PIN (3)  // Raspberry
 
 #define RED_COLOR (0)
 #define GREEN_COLOR (1)

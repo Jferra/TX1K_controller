@@ -7,10 +7,11 @@ int main() {
     std::cout << "Hello, World!" << std::endl;
 
     wiringPiSetupGpio();
+    std::cout << "Setting up GPIO" << std::endl;
 
     setupColorThread();
 
-    setupButtonThread();
+    //setupButtonThread();
 
     return 0;
 }

@@ -16,9 +16,9 @@
 //#define GREEN_PIN (4)   //Launchpad
 //#define BLUE_PIN (3)    //Launchpad
 
-#define RED_PIN (11)   // Raspberry
-#define GREEN_PIN (13) // Raspberry
-#define BLUE_PIN (15)  // Raspberry
+#define RED_PIN (0)   // Raspberry
+#define GREEN_PIN (2) // Raspberry
+#define BLUE_PIN (3)  // Raspberry
 
 #define RED_COLOR (0)
 #define GREEN_COLOR (1)
@@ -37,11 +37,11 @@ static uint8_t led_index;
 static uint8_t color_index;
 
 //static const uint8_t ledcolumnpins[NUM_LED_COLUMNS]   = {6,7,8,24}; //Launchpad PINS
-static const uint8_t ledcolumnpins[NUM_LED_COLUMNS]   = {31,33,35,37}; //Raspberry Pi3 PINS
+static const uint8_t ledcolumnpins[NUM_LED_COLUMNS]   = {22,23,24,25}; //Raspberry Pi3 PINS
 
 // RGB pins for each of 4 rows
 //static const uint8_t colorpins[NUM_COLORS] = {2,3,4}; //Launchpad PINS
-static const uint8_t colorpins[NUM_COLORS] = {11,13,15};   //Raspberry Pi3 PINS
+static const uint8_t colorpins[NUM_COLORS] = {0,2,3};   //Raspberry Pi3 PINS
 
 
 /**

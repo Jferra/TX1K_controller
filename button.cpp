@@ -1,14 +1,14 @@
 //
 // Created by JGMR on 17/06/2017.
 //
-
+#include <iostream>
 #include <cstdint>
 #include "button.h"
 
 #define NUM_BTN_COLUMNS (4)
 #define NUM_BTN_ROWS (1)
 
-#define BTN_PIN (29)
+#define BTN_PIN (21)
 
 #define MAX_DEBOUNCE (3)
 
@@ -30,7 +30,10 @@ void setupButtonThread()
     next_btn_scan = millis() + 1;
     btn_index = 0;
 
-    scan();
+    std::cout << "Setup Colors completed." << std::endl;
+    while(1){
+        scan();
+    }
 }
 
 /**
