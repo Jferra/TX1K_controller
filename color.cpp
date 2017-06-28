@@ -36,7 +36,7 @@ void setupColorThread() {
     color_index = 0;
 
     // Set LEDs default colors
-    //int colors[4] = { RED_COLOR, MAGENTA_COLOR, BLUE_COLOR, WHITE_COLOR };
+    int colors[4] = { RED_COLOR, MAGENTA_COLOR, BLUE_COLOR, WHITE_COLOR };
     setLEDColors(colors);
 
     std::cout << "Setup Colors completed." << std::endl;

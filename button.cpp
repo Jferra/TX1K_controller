@@ -8,13 +8,9 @@
 #define NUM_BTN_COLUMNS (4)
 #define NUM_BTN_ROWS (1)
 
-#define BTN_PIN (21)
+#define BTN_READ_PIN (21)
 
 #define MAX_DEBOUNCE (3)
-
-
-// Pins to read to know if a button is pressed
-static const uint8_t btnReadPins[4] = {12, 16, 18, 22};
 
 /**
  * Sets everything to start the Button thread
@@ -30,7 +26,7 @@ void setupButtonThread()
     next_btn_scan = millis() + 1;
     btn_index = 0;
 
-    std::cout << "Setup Colors completed." << std::endl;
+    std::cout << "Setup Buttons completed." << std::endl;
     while(1){
         scan();
     }
@@ -46,14 +42,14 @@ static void setupPins()
     uint8_t i;
 
     // Row button pin
-    pinMode(BTN_PIN, OUTPUT);
-    digitalWrite(BTN_PIN, HIGH);
+    pinMode(BTN_READ_PIN, INPUT);
+    pullUpDnControl(BTN_READ_PIN, PUD_UP);
 
     // Columns button pins
     for(i = 0; i < NUM_BTN_COLUMNS; i++)
     {
-        pinMode(btnReadPins[i], INPUT); //INPUT
-        pullUpDnControl(btnReadPins[i], PUD_UP);
+        pinMode(btnSelectionPins[i], OUTPUT);
+        digitalWrite(btnSelectionPins[i], HIGH);
     }
 }
 
@@ -71,9 +67,9 @@ static void scan()
     digitalWrite(btnSelectionPins[current], LOW);
 
 
-    //delay(1) //todo see if useful
+    delay(1);
 
-    val = digitalRead(BTN_PIN);     // We read the pin's value at the other side of the circuit
+    val = digitalRead(BTN_READ_PIN);     // We read the pin's value at the other side of the circuit
 
     if(val == LOW){ // Means that the button is pressed
         if(*debounce_count[current] < MAX_DEBOUNCE){
@@ -86,15 +82,12 @@ static void scan()
             }
         }
     } else {    // Means that the button is inactive
-        /*if(*debounce_count[current] > 0){
-            debounce_count[current]--;
-            if(*debounce_count[current] == 0){
-
-            }
-        }*/
+        if(*debounce_count[current] > 0){
+            int8_t current_db = *debounce_count[current];
+            current_db--;
+            *debounce_count[current] = current_db;
+        }
     }
-
-    //delay(1)
 
     digitalWrite(btnSelectionPins[current], HIGH); // Deselect current button
 
@@ -113,5 +106,5 @@ static void scan()
 static void sendButtonPressedEvent(int8_t btnId)
 {
     //todo send to communication thread a message
-    printf("pressed ! %u", btnId);
+    std::cout << "Button pressed !" << unsigned(btnId) << std::endl;
 }
