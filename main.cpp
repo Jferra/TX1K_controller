@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 #include <wiringPi.h>
 #include "color.h"
 #include "button.h"
@@ -9,9 +10,12 @@ int main() {
     std::cout << "Setting up GPIO" << std::endl;
     wiringPiSetup();    // Setup Pins using wiringPi mapping
 
-    setupColorThread();
+    std::thread colorThread(setupColorThread);
+    std::thread buttonThread(setupButtonThread);
+    //std::thread communicationThread()
 
-    //setupButtonThread();
+    colorThread.join();
+    buttonThread.join();
 
     return 0;
 }

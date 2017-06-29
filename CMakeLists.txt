@@ -12,6 +12,9 @@ set(SOURCE_FILES
         Communication.cpp
         Communication.h)
 
+find_package (Threads)
+
 add_executable(Controller ${SOURCE_FILES})
 target_link_libraries(Controller /usr/local/lib/libwiringPi.so)
 target_link_libraries(Controller /usr/local/lib/libpaho-mqtt3c.so)
+target_link_libraries (Controller ${CMAKE_THREAD_LIBS_INIT})
