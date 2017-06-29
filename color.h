@@ -12,9 +12,9 @@
 #define NUM_LED_ROWS (1)
 #define NUM_COLORS (3)
 
-#define RED_PIN (0)   // Raspberry
-#define GREEN_PIN (2) // Raspberry
-#define BLUE_PIN (3)  // Raspberry
+#define RED_PIN (0)
+#define GREEN_PIN (3)
+#define BLUE_PIN (2)
 
 #define RED_COLOR (0)
 #define GREEN_COLOR (1)
@@ -31,10 +31,10 @@ static int32_t next_color_scan;
 static uint8_t led_index;
 static uint8_t color_index;
 
-static const uint8_t ledcolumnpins[NUM_LED_COLUMNS]   = {1,4,5,6}; //Raspberry Pi3 PINS
+static const uint8_t ledcolumnpins[NUM_LED_COLUMNS]   = {1,4,5,6};
 
 // RGB pins for each of 4 rows
-static const uint8_t colorpins[NUM_COLORS] = {0, 2, 3};   //Raspberry Pi3 PINS
+static const uint8_t colorpins[NUM_COLORS] = {0, 3, 2};
 
 
 /**

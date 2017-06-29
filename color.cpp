@@ -10,8 +10,8 @@
 #define NUM_COLORS (3)
 
 #define RED_PIN (0)   // Raspberry
-#define GREEN_PIN (2) // Raspberry
-#define BLUE_PIN (3)  // Raspberry
+#define GREEN_PIN (3) // Raspberry
+#define BLUE_PIN (2)  // Raspberry
 
 #define RED_COLOR (0)
 #define GREEN_COLOR (1)
