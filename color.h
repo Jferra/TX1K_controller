@@ -26,7 +26,6 @@
 
 
 static bool LED_colors[NUM_LED_COLUMNS][NUM_COLORS];	// Mapping grid of LED colors
-static int32_t next_color_scan;
 
 static uint8_t led_index;
 static uint8_t color_index;
@@ -36,7 +35,7 @@ static const uint8_t ledcolumnpins[NUM_LED_COLUMNS]   = {1,4,5,6};
 // RGB pins for each of 4 rows
 static const uint8_t colorpins[NUM_COLORS] = {0, 3, 2};
 
-
+static bool isRunning = true;
 /**
  * Sets everything to start the Color thread
  */

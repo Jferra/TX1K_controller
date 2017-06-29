@@ -23,13 +23,14 @@ void setupButtonThread()
     setupPins();
 
     // init global variables
-    next_btn_scan = millis() + 1;
     btn_index = 0;
 
     std::cout << "Setup Buttons completed." << std::endl;
-    while(1){
+
+    while(isRunning){
         scan();
     }
+    std::cout << "Button process ended." << std::endl;
 }
 
 /**

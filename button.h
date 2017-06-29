@@ -15,13 +15,13 @@
 
 #define MAX_DEBOUNCE (3)
 
-static int32_t next_btn_scan;
-
 static uint8_t btn_index;
 
 static const uint8_t btnSelectionPins[4] = {22, 23, 24, 25};
 
 static int8_t debounce_count[NUM_BTN_COLUMNS][NUM_BTN_ROWS] = {0};
+
+static bool isRunning = true;
 
 /**
  * Sets everything to start the Button thread

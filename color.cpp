@@ -31,7 +31,6 @@ void setupColorThread() {
     setupPins();
 
     // init global variables
-    //static uint8_t next_color_scan = millis() + 1;
     led_index = 0;
     color_index = 0;
 
@@ -41,7 +40,7 @@ void setupColorThread() {
 
     std::cout << "Setup Colors completed." << std::endl;
 
-    while(1){
+    while(isRunning){
 
         scan();
 
@@ -58,6 +57,7 @@ void setupColorThread() {
             color_index = 0;
         }
     }
+    std::cout << "Color process ended." << std::endl;
     //todo add listeners to receive commands
 }
 
