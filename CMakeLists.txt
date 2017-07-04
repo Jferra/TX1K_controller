@@ -9,8 +9,8 @@ set(SOURCE_FILES
         color.h
         button.cpp
         button.h
-        Communication.cpp
-        Communication.h)
+        MQTTService.cpp
+        MQTTService.h communication.cpp communication.h)
 
 find_package (Threads)
 

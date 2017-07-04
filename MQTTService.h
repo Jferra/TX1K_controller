@@ -2,8 +2,8 @@
 // Created by narvena on 22/06/17.
 //
 
-#ifndef CONTROLLER_COMMUNICATION_H
-#define CONTROLLER_COMMUNICATION_H
+#ifndef CONTROLLER_MQTTSERVICE_H
+#define CONTROLLER_MQTTSERVICE_H
 
 #include <cstdlib>
 #include <cstring>
@@ -15,7 +15,7 @@
 #define QOS         0
 #define TIMEOUT     10000L
 
-class Communication {
+class MQTTService {
 
 public:
     MQTTClient client;
@@ -26,7 +26,7 @@ public:
     int retCode;
 
 
-    Communication(
+    MQTTService(
             MQTTClient_connectOptions pConnectOptions,
             MQTTClient_message pMessage,
             MQTTClient_deliveryToken pToken,
@@ -40,4 +40,4 @@ public:
 };
 
 
-#endif //CONTROLLER_COMMUNICATION_H
+#endif //CONTROLLER_MQTTSERVICE_H

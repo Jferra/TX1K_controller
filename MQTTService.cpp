@@ -2,9 +2,9 @@
 // Created by narvena on 22/06/17.
 //
 
-#include "Communication.h"
+#include "MQTTService.h"
 
-Communication::Communication(
+MQTTService::MQTTService(
         MQTTClient_connectOptions pConnectOptions,
         MQTTClient_message pMessage,
         MQTTClient_deliveryToken pToken,
@@ -19,7 +19,7 @@ Communication::Communication(
     initMQTTClient();
 };
 
-void Communication::initMQTTClient() {
+void MQTTService::initMQTTClient() {
     MQTTClient_create(&client, ADDRESS, clientID,
                       MQTTCLIENT_PERSISTENCE_NONE, NULL);
     conn_opts.keepAliveInterval = 20;
@@ -32,7 +32,7 @@ void Communication::initMQTTClient() {
     }
 }
 
-void Communication::sendMessageToTopic(char* pTopic, char* pMessage) {
+void MQTTService::sendMessageToTopic(char* pTopic, char* pMessage) {
     pubmsg.payload = &pMessage;
     pubmsg.payloadlen = strlen(pMessage);
     pubmsg.qos = QOS;
@@ -46,7 +46,11 @@ void Communication::sendMessageToTopic(char* pTopic, char* pMessage) {
     disconnectClient();
 }
 
-void Communication::disconnectClient() {
+void MQTTService::subscribeToTopic(char* pTopic){
+
+}
+
+void MQTTService::disconnectClient() {
     MQTTClient_disconnect(client, 10000);
     MQTTClient_destroy(&client);
 }
