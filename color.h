@@ -35,7 +35,7 @@ static const uint8_t ledcolumnpins[NUM_LED_COLUMNS]   = {1,4,5,6};
 // RGB pins for each of 4 rows
 static const uint8_t colorpins[NUM_COLORS] = {0, 3, 2};
 
-static bool isRunning = true;
+static bool isColorThreadRunning = true;
 /**
  * Sets everything to start the Color thread
  */
@@ -55,5 +55,9 @@ static void scan();
  * Set all colors
  */
 static void setLEDColors(int colors[4]);
+
+//todo to put in Network.cpp
+void error();
+static int connectSocket(unsigned int port, char* ip);
 
 #endif //CONTROLLER_COLOR_H

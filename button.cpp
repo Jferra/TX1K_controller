@@ -27,7 +27,7 @@ void setupButtonThread()
 
     std::cout << "Setup Buttons completed." << std::endl;
 
-    while(isRunning){
+    while(isButtonThreadRunning){
         scan();
     }
     std::cout << "Button process ended." << std::endl;

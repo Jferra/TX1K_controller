@@ -34,9 +34,11 @@ public:
 
     void initMQTTClient();
 
-    void disconnectClient();
-
     void sendMessageToTopic(char* pTopic, char* pMessage);
+
+    void subscribeToTopic(char* pTopic);
+
+    void disconnectClient();
 };
 
 
