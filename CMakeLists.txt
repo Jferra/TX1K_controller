@@ -10,7 +10,11 @@ set(SOURCE_FILES
         button.cpp
         button.h
         MQTTService.cpp
-        MQTTService.h communication.cpp communication.h)
+        MQTTService.h
+        CommunicationManager.cpp
+        CommunicationManager.h
+        NetworkService.cpp
+        NetworkService.h)
 
 find_package (Threads)
 

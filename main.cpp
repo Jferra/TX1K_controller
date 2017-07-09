@@ -1,7 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <wiringPi.h>
-#include "communication.h"
+#include "CommunicationManager.h"
 #include "color.h"
 #include "button.h"
 
@@ -12,10 +12,10 @@ int main() {
 
 
 
-    std::cout << "Setting up GPIO" << std::endl;
+    std::cout << "Setting up GPIOs" << std::endl;
     wiringPiSetup();    // Setup Pins using wiringPi mapping
 
-    std::thread communicationThread(startCommunicationThread);
+    std::thread communicationThread(startCommunicationManager);
     std::thread colorThread(setupColorThread);
     std::thread buttonThread(setupButtonThread);
 

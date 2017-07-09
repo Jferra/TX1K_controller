@@ -14,16 +14,14 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include "NetworkService.h"
+#include "MQTTService.h"
 
-//htons -> this writes the port number in network byte order
-#define COLOR_SOCKET_PORT htons(45000)
-#define COLOR_SOCKET_ADR inet_addr("127.0.0.1")
 
-void errorInSocket(const char *msg);
-
-void startCommunicationThread();
-
-void startSockets();
+/**
+ * Start CommunicationManager
+ */
+void startCommunicationManager();
 
 void startColorSocket();
 

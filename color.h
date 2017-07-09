@@ -6,7 +6,10 @@
 #define CONTROLLER_COLOR_H
 
 #include <stdio.h>
+#include <iostream>
+#include <cstdint>
 #include <wiringPi.h>
+#include "NetworkService.h"
 
 #define NUM_LED_COLUMNS (4)
 #define NUM_LED_ROWS (1)
