@@ -4,27 +4,34 @@
 
 #include "MQTTService.h"
 
-MQTTService::MQTTService(
-        MQTTClient_connectOptions pConnectOptions,
-        MQTTClient_message pMessage,
-        MQTTClient_deliveryToken pToken,
-        char* pClientID)
+volatile MQTTClient_deliveryToken deliveredToken;
+
+MQTTService::MQTTService(char* brokerAddress, char* pClientID)
 {
-    MQTTClient client;
     conn_opts = MQTTClient_connectOptions_initializer;
     pubmsg = MQTTClient_message_initializer;
-    token = pToken;
+    //token = pToken;
     clientID = pClientID;
 
-    initMQTTClient();
+    initMQTTClient(brokerAddress);
 };
 
-void MQTTService::initMQTTClient() {
-    MQTTClient_create(&client, ADDRESS, clientID,
+MQTTService::~MQTTService(){}
+
+void MQTTService::setCallbacks(void(*connectionLost)(void *context, char *cause),
+                               int(*messageArrived)(void *context, char *topicName, int topicLen, MQTTClient_message *message),
+                               void(*deliveryComplete)(void *context, MQTTClient_deliveryToken dt)){
+    MQTTClient_setCallbacks(client, NULL, connectionLost, messageArrived, deliveryComplete);
+}
+
+void MQTTService::initMQTTClient(char* brokerAddress) {
+    MQTTClient_create(&client, brokerAddress, clientID,
                       MQTTCLIENT_PERSISTENCE_NONE, NULL);
     conn_opts.keepAliveInterval = 20;
     conn_opts.cleansession = 1;
+}
 
+void MQTTService::connect() {
     if ((retCode = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
     {
         printf("Failed to connect, return code %d\n", retCode);
@@ -32,10 +39,15 @@ void MQTTService::initMQTTClient() {
     }
 }
 
-void MQTTService::sendMessageToTopic(char* pTopic, char* pMessage) {
+
+void MQTTService::subscribeToTopic(char* pTopic, int pQos){
+    MQTTClient_subscribe(client, pTopic, pQos);
+}
+
+void MQTTService::sendMessageToTopic(char* pTopic, char* pMessage, int pQos) {
     pubmsg.payload = &pMessage;
     pubmsg.payloadlen = strlen(pMessage);
-    pubmsg.qos = QOS;
+    pubmsg.qos = pQos;
     pubmsg.retained = 0;
     MQTTClient_publishMessage(client, pTopic, &pubmsg, &token);
     printf("Waiting for up to %d seconds for publication of %s\n"
@@ -46,11 +58,44 @@ void MQTTService::sendMessageToTopic(char* pTopic, char* pMessage) {
     disconnectClient();
 }
 
-void MQTTService::subscribeToTopic(char* pTopic){
-
+void MQTTService::unsubscribeFromTopic(char* pTopic){
+    MQTTClient_unsubscribe(clientID, pTopic);
 }
 
 void MQTTService::disconnectClient() {
     MQTTClient_disconnect(client, 10000);
     MQTTClient_destroy(&client);
+}
+
+
+void delivered(void *context, MQTTClient_deliveryToken dt)
+{
+    printf("Message with token value %d delivery confirmed\n", dt);
+    deliveredToken = dt;
+}
+
+/*int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message)
+{
+    int i;
+    char* payloadptr;
+
+    printf("Message arrived\n");
+    printf("     topic: %s\n", topicName);
+    printf("   message: ");
+
+    payloadptr = message->payload;
+    for(i=0; i<message->payloadlen; i++)
+    {
+        putchar(*payloadptr++);
+    }
+    putchar('\n');
+    MQTTClient_freeMessage(&message);
+    MQTTClient_free(topicName);
+    return 1;
+}*/
+
+void connlost(void *context, char *cause)
+{
+    printf("\nConnection lost\n");
+    printf("     cause: %s\n", cause);
 }

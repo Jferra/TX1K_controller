@@ -27,6 +27,8 @@
 #define YELLOW_COLOR (5)
 #define WHITE_COLOR (6)
 
+#define COLOR_SOCKET_ADR    "localhost"
+#define COLOR_SOCKET_PORT   45000
 
 static bool LED_colors[NUM_LED_COLUMNS][NUM_COLORS];	// Mapping grid of LED colors
 
@@ -58,9 +60,5 @@ static void scan();
  * Set all colors
  */
 static void setLEDColors(int colors[4]);
-
-//todo to put in Network.cpp
-void error();
-static int connectSocket(unsigned int port, char* ip);
 
 #endif //CONTROLLER_COLOR_H

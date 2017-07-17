@@ -5,6 +5,7 @@
 #ifndef CONTROLLER_COMMUNICATION_H
 #define CONTROLLER_COMMUNICATION_H
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,22 +18,43 @@
 #include "NetworkService.h"
 #include "MQTTService.h"
 
+#define BROKER_ADDRESS "tcp://37.187.245.213:1883"
+#define MQTT_CLIENT_ID "Toto"
+#define MQTT_TOPIC     "toto"
+#define QOS            0
 
-/**
- * Start CommunicationManager
- */
-void startCommunicationManager();
+#define COLOR_SOCKET_ADR    "localhost"
+#define COLOR_SOCKET_PORT   45000
 
-void startColorSocket();
+class CommunicationManager{
 
-void startButtonSocket();
+public:
+    MQTTService * mqtt;
+    int colorSocket;
+    int buttonSocket;
 
-void sendButtonPressedNotification();
+    CommunicationManager();
+    virtual ~CommunicationManager();
 
-void sendNewColorSettings();
+    /**
+     * Start CommunicationManager
+     */
+    void startCommunicationManager();
 
-void publishOnSocket();
+private:
+    int startColorSocket();
 
-void publishOnMQTTTopic();
+    int startButtonSocket();
+
+    int messageArrivedCallback(void *context, char* topicName, int topicLen, MQTTClient_message *message);
+
+    void sendButtonPressedNotification();
+
+    void sendNewColorSettings();
+
+    void publishOnSocket();
+
+    void publishOnMQTTTopic();
+};
 
 #endif //CONTROLLER_COMMUNICATION_H

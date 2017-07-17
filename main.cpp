@@ -5,17 +5,19 @@
 #include "color.h"
 #include "button.h"
 
+
+#define COLOR_SOCKET_ADR    "localhost"
+#define COLOR_SOCKET_PORT   45000
+
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    CommunicationManager * cM = new CommunicationManager;
 
     //todo start color & button sockets
-
-
 
     std::cout << "Setting up GPIOs" << std::endl;
     wiringPiSetup();    // Setup Pins using wiringPi mapping
 
-    std::thread communicationThread(startCommunicationManager);
+    std::thread communicationThread(std::bind(&CommunicationManager::startCommunicationManager, cM));
     std::thread colorThread(setupColorThread);
     std::thread buttonThread(setupButtonThread);
 
@@ -23,5 +25,6 @@ int main() {
     colorThread.join();
     buttonThread.join();
 
+    delete cM;
     return 0;
 }

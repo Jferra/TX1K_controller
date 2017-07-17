@@ -1,6 +1,7 @@
 //
 // Created by JGMR on 17/06/2017.
 //
+
 #include "color.h"
 
 #define NUM_LED_COLUMNS (4)
@@ -19,21 +20,20 @@
 #define YELLOW_COLOR (5)
 #define WHITE_COLOR (6)
 
-#define COLOR_SOCKET_ADR    "localhost"
-#define COLOR_SOCKET_PORT   45000
-
 /**
  * Starts the process concerning LEDs management
  * @method setupColorThread
  */
 void setupColorThread() {
+
     int socketFileDescriptor;
+    char* messageReceived;
 
     // setup hardware
     setupPins();
 
     // Connect to socket
-    socketFileDescriptor = connectToSocket(COLOR_SOCKET_PORT, COLOR_SOCKET_ADR);
+    socketFileDescriptor = NetworkService::connectToSocket(COLOR_SOCKET_PORT, COLOR_SOCKET_ADR);
 
     // init global variables
     led_index = 0;
@@ -46,7 +46,9 @@ void setupColorThread() {
     std::cout << "Setup Colors completed." << std::endl;
 
     while(isColorThreadRunning){
-        readMessageFromSocket(socketFileDescriptor);
+        messageReceived = NetworkService::readMessageFromSocket(socketFileDescriptor);
+        std::cout << "Message received from Socket !" << std::endl;
+        std::cout << messageReceived << std::endl;
 
         scan();
 

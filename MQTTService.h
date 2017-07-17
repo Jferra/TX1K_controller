@@ -5,14 +5,13 @@
 #ifndef CONTROLLER_MQTTSERVICE_H
 #define CONTROLLER_MQTTSERVICE_H
 
-#include <cstdlib>
-#include <cstring>
-#include <MQTTClient.h>
+#include <functional>
+extern "C" {
+    #include <cstdlib>
+    #include <cstring>
+    #include <MQTTClient.h>
+}
 
-#define ADDRESS     "tcp://37.187.245.213:1883"
-//#define CLIENTID    "ExampleClientPub"
-//#define TOPIC       "test"
-#define QOS         0
 #define TIMEOUT     10000L
 
 class MQTTService {
@@ -26,17 +25,22 @@ public:
     int retCode;
 
 
-    MQTTService(
-            MQTTClient_connectOptions pConnectOptions,
-            MQTTClient_message pMessage,
-            MQTTClient_deliveryToken pToken,
-            char* clientID);
+    MQTTService(char* brokerAddress, char* pClientID);
+    virtual ~MQTTService();
 
-    void initMQTTClient();
+    void setCallbacks(void(*connectionLost)(void *context, char *cause),
+                      int(*messageArrived)(void *context, char *topicName, int topicLen, MQTTClient_message *message),
+                      void(*deliveryComplete)(void *context, MQTTClient_deliveryToken dt) );
 
-    void sendMessageToTopic(char* pTopic, char* pMessage);
+    void initMQTTClient(char* brokerAddress);
 
-    void subscribeToTopic(char* pTopic);
+    void connect();
+
+    void sendMessageToTopic(char* pTopic, char* pMessage, int pQos);
+
+    void subscribeToTopic(char* pTopic, int pQos);
+
+    void unsubscribeFromTopic(char* pTopic);
 
     void disconnectClient();
 };

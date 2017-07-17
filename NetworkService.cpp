@@ -4,12 +4,12 @@
 
 #include "NetworkService.h"
 
-void error(const char *msg) {
+void NetworkService::error(const char *msg) {
     perror(msg);
     exit(0);
 }
 
-static int connectToSocket(unsigned int port, char* ip){
+int NetworkService::connectToSocket(unsigned int port, char* ip){
     int socketFd;
     bool isConnectionEstablished = false;
     struct sockaddr_in serverAddress;
@@ -21,7 +21,7 @@ static int connectToSocket(unsigned int port, char* ip){
     // returns the sockets file descriptor.
     server = gethostbyname(ip);
 
-    bzero((char *) &serverAddress, sizeof(serverAddress));
+    memset((char *) &serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
     bcopy((char *)server->h_addr,//h_addr -> contains server IP address. Here, we copy the IP address to serverAddress struct
           (char *)&serverAddress.sin_addr.s_addr,
@@ -40,44 +40,44 @@ static int connectToSocket(unsigned int port, char* ip){
     }
 }
 
-static int closeConnectionToSocket(int socketFileDescriptor){
+int NetworkService::closeConnectionToSocket(int socketFileDescriptor){
     return closeSocket(socketFileDescriptor);
 }
 
-static int openSocket(unsigned int port, char* ip){
+int NetworkService::openSocket(unsigned int port, char* ip){
     int socketFd,
-        newSocketFd,
-        n;
+            newSocketFd,
+            n;
     socklen_t cliLength;   // client length
     char buffer[256]; //reception buffer
     sockaddr_in serverAddress,
-                clientAddress;
+            clientAddress;
 
 
     socketFd = socket(AF_INET, SOCK_STREAM, 0);   // Create socket
 
-    bzero((char *) &serverAddress, sizeof(serverAddress));
+    memset((char *) &serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET; //AF_INET -> to use inter-network connection (UDp, TCP)
     serverAddress.sin_port = htons(port); //htons -> this writes the port number in network byte order
     serverAddress.sin_addr.s_addr = inet_addr(ip);  //IP address
 
     if (bind(socketFd, (struct sockaddr *) &serverAddress,
              sizeof(serverAddress)) < 0)    // binds the socket to its port
-        errorInSocket("ERROR on binding");
+        error("ERROR on binding");
 
     listen(socketFd,5); //5 = liste d'attente pour accepter connexion
     cliLength = sizeof(clientAddress);
     // Accept first connection
     newSocketFd = accept(socketFd,
-                       (struct sockaddr *) &clientAddress,
-                       &cliLength);    // allocation of client address memory needed
+                         (struct sockaddr *) &clientAddress,
+                         &cliLength);    // allocation of client address memory needed
     if(newSocketFd < 0)
         error("ERROR while accepting client connection");
 
     return newSocketFd;
 }
 
-static int closeSocket(int socketFileDescriptor){
+int NetworkService::closeSocket(int socketFileDescriptor){
     int returnCode;
     returnCode = close(socketFileDescriptor);
 
@@ -87,21 +87,22 @@ static int closeSocket(int socketFileDescriptor){
     return returnCode;
 }
 
-static int sendMessageToSocket(int socketFd, char* message){
+int NetworkService::sendMessageToSocket(int socketFd, char* message){
     //this is to put in an infinite loop server-side -> writes a message when asked (?)
     int returnCode;
     char buffer[256];
-    bzero(buffer,256);
-    strcpy(buffer, message.c_str());
+    memset(buffer, 0, 256);
+    strcpy(buffer, message);
     returnCode = write(socketFd,buffer,strlen(buffer));
     if (returnCode < 0)
         error("ERROR writing to socket");
+    return returnCode;
 }
 
-static char* readMessageFromSocket(int socketFd){
+char* NetworkService::readMessageFromSocket(int socketFd){
     int returnCode;
     char buffer[256];
-    bzero(buffer,256);
+    memset(buffer, 0, 256);
     returnCode = read(socketFd,buffer,255);
     if (returnCode < 0)
         error("ERROR reading from socket");
