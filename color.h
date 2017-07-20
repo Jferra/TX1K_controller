@@ -27,7 +27,7 @@
 #define YELLOW_COLOR (5)
 #define WHITE_COLOR (6)
 
-#define COLOR_SOCKET_ADR    "localhost"
+#define COLOR_SOCKET_ADR    "127.0.0.1"
 #define COLOR_SOCKET_PORT   45000
 
 static bool LED_colors[NUM_LED_COLUMNS][NUM_COLORS];	// Mapping grid of LED colors

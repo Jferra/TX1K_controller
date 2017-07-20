@@ -26,6 +26,7 @@ void CommunicationManager::startCommunicationManager()
 
 int CommunicationManager::startColorSocket()
 {
+    std::cout << "CommunicationManager::startColorSocket" << std::endl;
     int socket = NetworkService::openSocket(COLOR_SOCKET_PORT, COLOR_SOCKET_ADR);
     return socket;
 }

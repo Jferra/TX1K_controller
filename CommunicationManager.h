@@ -23,7 +23,7 @@
 #define MQTT_TOPIC     "toto"
 #define QOS            0
 
-#define COLOR_SOCKET_ADR    "localhost"
+#define COLOR_SOCKET_ADR    "127.0.0.1"
 #define COLOR_SOCKET_PORT   45000
 
 class CommunicationManager{

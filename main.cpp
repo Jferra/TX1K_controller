@@ -5,10 +5,6 @@
 #include "color.h"
 #include "button.h"
 
-
-#define COLOR_SOCKET_ADR    "localhost"
-#define COLOR_SOCKET_PORT   45000
-
 int main() {
     CommunicationManager * cM = new CommunicationManager;
 

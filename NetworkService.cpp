@@ -21,6 +21,12 @@ int NetworkService::connectToSocket(unsigned int port, char* ip){
     // returns the sockets file descriptor.
     server = gethostbyname(ip);
 
+
+    std::cout << "NetworkService::connectToSocket socketFd : " << socketFd << std::endl;
+    std::cout << "NetworkService::connectToSocket IP requested : " << ip << std::endl;
+    std::cout << "NetworkService::connectToSocket server address : " << server->h_addr << std::endl;
+
+
     memset((char *) &serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
     bcopy((char *)server->h_addr,//h_addr -> contains server IP address. Here, we copy the IP address to serverAddress struct
@@ -28,13 +34,22 @@ int NetworkService::connectToSocket(unsigned int port, char* ip){
           server->h_length);
     serverAddress.sin_port = htons(port);
 
+
+    std::cout << "IP address : " << serverAddress.sin_addr.s_addr << std::endl;
+    std::cout << "Port : " << serverAddress.sin_port << std::endl;
+
     // Try to connect to socket until connection is established
     while(!isConnectionEstablished){
-        std::cout << "Attempting to connect to socket " << port << ":" << ip << "...";
-        if (connect(socketFd,(struct sockaddr *) &serverAddress,sizeof(serverAddress)) < 0) {  // try to connect to the server
+        std::cout << "Attempting to connect to socket " << ip << ":" << port << "..." << std::endl;
+
+        // try to connect to the server
+        if (connect(socketFd,(struct sockaddr *) &serverAddress,sizeof(serverAddress)) < 0)
+        {
             perror("ERROR connecting");
-        } else {
+        } else
+        {
             isConnectionEstablished = true;
+            std::cout << "Connected to " << ip << ":" << port << std::endl;
             return socketFd;
         }
     }
@@ -45,36 +60,55 @@ int NetworkService::closeConnectionToSocket(int socketFileDescriptor){
 }
 
 int NetworkService::openSocket(unsigned int port, char* ip){
+    std::cout << "NetworkService::openSocket -- opening socket" << ip << ":" << port << std::endl;
+
     int socketFd,
-            newSocketFd,
-            n;
-    socklen_t cliLength;   // client length
-    char buffer[256]; //reception buffer
+        clientSocketFd,
+        n;
+
+    bool isClientConnected = false;
+    socklen_t cliLength;                            // client length
+    char buffer[256];                               //reception buffer
+
     sockaddr_in serverAddress,
-            clientAddress;
+                clientAddress;
 
 
-    socketFd = socket(AF_INET, SOCK_STREAM, 0);   // Create socket
+    socketFd = socket(AF_INET, SOCK_STREAM, 0);     // Create socket
 
     memset((char *) &serverAddress, 0, sizeof(serverAddress));
-    serverAddress.sin_family = AF_INET; //AF_INET -> to use inter-network connection (UDp, TCP)
-    serverAddress.sin_port = htons(port); //htons -> this writes the port number in network byte order
+    serverAddress.sin_family = AF_INET;             //AF_INET -> to use inter-network connection (UDp, TCP)
+    serverAddress.sin_port = htons(port);           //htons -> this writes the port number in network byte order
     serverAddress.sin_addr.s_addr = inet_addr(ip);  //IP address
 
-    if (bind(socketFd, (struct sockaddr *) &serverAddress,
-             sizeof(serverAddress)) < 0)    // binds the socket to its port
+    std::cout << "IP address : " << serverAddress.sin_addr.s_addr << std::endl;
+    std::cout << "Port : " << serverAddress.sin_port << std::endl;
+
+    // binds the socket to its port
+    if (bind(socketFd, (struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0)
         error("ERROR on binding");
+    else
+        std::cout << "NetworkService::openSocket -- socket binding SUCCESS  " << socketFd << std::endl;
 
-    listen(socketFd,5); //5 = liste d'attente pour accepter connexion
-    cliLength = sizeof(clientAddress);
-    // Accept first connection
-    newSocketFd = accept(socketFd,
-                         (struct sockaddr *) &clientAddress,
-                         &cliLength);    // allocation of client address memory needed
-    if(newSocketFd < 0)
-        error("ERROR while accepting client connection");
+    listen(socketFd, 5);                            //5 = waiting list of clients to be accepted
 
-    return newSocketFd;
+    while(!isClientConnected)
+    {
+        std::cout << "NetworkService -- Waiting for client connection..." << std::endl;
+        cliLength = sizeof(clientAddress);
+        // Accept first connection
+        clientSocketFd = accept(socketFd,
+                             (struct sockaddr *) &clientAddress,
+                             &cliLength);    // allocation of client address memory needed
+
+        if(clientSocketFd < 0)
+            error("ERROR while accepting client connection");
+        else
+            isClientConnected = true;
+
+        std::cout << "clientSocketFd = " << clientSocketFd << std::endl;
+    }
+    return clientSocketFd;
 }
 
 int NetworkService::closeSocket(int socketFileDescriptor){
