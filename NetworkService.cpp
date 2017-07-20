@@ -32,7 +32,7 @@ int NetworkService::connectToSocket(unsigned int port, char* ip){
     while(!isConnectionEstablished){
         std::cout << "Attempting to connect to socket " << port << ":" << ip << "...";
         if (connect(socketFd,(struct sockaddr *) &serverAddress,sizeof(serverAddress)) < 0) {  // try to connect to the server
-            error("ERROR connecting");
+            perror("ERROR connecting");
         } else {
             isConnectionEstablished = true;
             return socketFd;
