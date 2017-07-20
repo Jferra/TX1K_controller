@@ -14,15 +14,12 @@ MQTTService::MQTTService(char* brokerAddress, char* pClientID)
     clientID = pClientID;
 
     initMQTTClient(brokerAddress);
+
+    // Set MQTTClient callbacks
+    MQTTClient_setCallbacks(client, NULL, connectionLost, messageArrivedCallback, delivered);
 };
 
 MQTTService::~MQTTService(){}
-
-void MQTTService::setCallbacks(void(*connectionLost)(void *context, char *cause),
-                               int(*messageArrived)(void *context, char *topicName, int topicLen, MQTTClient_message *message),
-                               void(*deliveryComplete)(void *context, MQTTClient_deliveryToken dt)){
-    MQTTClient_setCallbacks(client, NULL, connectionLost, messageArrived, deliveryComplete);
-}
 
 void MQTTService::initMQTTClient(char* brokerAddress) {
     MQTTClient_create(&client, brokerAddress, clientID,
@@ -68,10 +65,30 @@ void MQTTService::disconnectClient() {
 }
 
 
-void delivered(void *context, MQTTClient_deliveryToken dt)
+void MQTTService::delivered(void *context, MQTTClient_deliveryToken dt)
 {
     printf("Message with token value %d delivery confirmed\n", dt);
     deliveredToken = dt;
+}
+
+int MQTTService::messageArrivedCallback(void *context, char* topicName, int topicLen, MQTTClient_message *message)
+{
+    void* payloadptr;
+    int hasMessageArrived;
+    //payloadptr = message->payload; //todo this is to correct
+
+    std::cout << "Message received on topic" << topicName << " !" << std::endl;
+    std::cout << payloadptr << std::endl;
+
+    //todo send message to color thread (must be done in CommunicationManager
+    //hasMessageArrived = NetworkService::sendMessageToSocket(colorSocket, payloadptr);
+
+
+    // Free memory allocated to the message once it is processed
+    MQTTClient_freeMessage(&message);
+    MQTTClient_free(topicName);
+
+    return hasMessageArrived;   //todo return message. Needs to be changed, as message has been cleaned just before
 }
 
 /*int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message)
@@ -94,7 +111,7 @@ void delivered(void *context, MQTTClient_deliveryToken dt)
     return 1;
 }*/
 
-void connlost(void *context, char *cause)
+void MQTTService::connectionLost(void *context, char *cause)
 {
     printf("\nConnection lost\n");
     printf("     cause: %s\n", cause);

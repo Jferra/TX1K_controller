@@ -5,12 +5,16 @@
 #ifndef CONTROLLER_MQTTSERVICE_H
 #define CONTROLLER_MQTTSERVICE_H
 
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <functional>
 extern "C" {
     #include <cstdlib>
     #include <cstring>
     #include <MQTTClient.h>
 }
+#include "NetworkService.h"
 
 #define TIMEOUT     10000L
 
@@ -24,13 +28,9 @@ public:
     char* clientID;
     int retCode;
 
-
     MQTTService(char* brokerAddress, char* pClientID);
-    virtual ~MQTTService();
 
-    void setCallbacks(void(*connectionLost)(void *context, char *cause),
-                      int(*messageArrived)(void *context, char *topicName, int topicLen, MQTTClient_message *message),
-                      void(*deliveryComplete)(void *context, MQTTClient_deliveryToken dt) );
+    virtual ~MQTTService();
 
     void initMQTTClient(char* brokerAddress);
 
@@ -43,6 +43,12 @@ public:
     void unsubscribeFromTopic(char* pTopic);
 
     void disconnectClient();
+
+    static void delivered(void *context, MQTTClient_deliveryToken dt);
+
+    static int messageArrivedCallback(void *context, char* topicName, int topicLen, MQTTClient_message *message);
+
+    static void connectionLost(void *context, char *cause);
 };
 
 

@@ -46,8 +46,6 @@ private:
 
     int startButtonSocket();
 
-    int messageArrivedCallback(void *context, char* topicName, int topicLen, MQTTClient_message *message);
-
     void sendButtonPressedNotification();
 
     void sendNewColorSettings();
