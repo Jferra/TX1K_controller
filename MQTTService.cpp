@@ -10,7 +10,6 @@ MQTTService::MQTTService(char* brokerAddress, char* pClientID)
 {
     conn_opts = MQTTClient_connectOptions_initializer;
     pubmsg = MQTTClient_message_initializer;
-    //token = pToken;
     clientID = pClientID;
 
     initMQTTClient(brokerAddress);
@@ -90,26 +89,6 @@ int MQTTService::messageArrivedCallback(void *context, char* topicName, int topi
 
     return hasMessageArrived;   //todo return message. Needs to be changed, as message has been cleaned just before
 }
-
-/*int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_message *message)
-{
-    int i;
-    char* payloadptr;
-
-    printf("Message arrived\n");
-    printf("     topic: %s\n", topicName);
-    printf("   message: ");
-
-    payloadptr = message->payload;
-    for(i=0; i<message->payloadlen; i++)
-    {
-        putchar(*payloadptr++);
-    }
-    putchar('\n');
-    MQTTClient_freeMessage(&message);
-    MQTTClient_free(topicName);
-    return 1;
-}*/
 
 void MQTTService::connectionLost(void *context, char *cause)
 {
