@@ -22,6 +22,10 @@ void CommunicationManager::startCommunicationManager()
 
     // Subscribe to topic
     mqtt->subscribeToTopic(MQTT_TOPIC, QOS);
+
+    char* messageToSend = "{\"mykey\" : \"KALIMBA\"}\n";
+
+    mqtt->sendMessageToTopic(MQTT_TOPIC, messageToSend, QOS);
 }
 
 int CommunicationManager::startColorSocket()

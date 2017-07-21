@@ -78,26 +78,31 @@ void MQTTService::delivered(void *context, MQTTClient_deliveryToken dt)
     printf("Message with token value %d delivery confirmed\n", dt);
     deliveredToken = dt;
 }
-
+//todo this would be best declared in CommunicationManager. Sending messages to sockets is not part of MQTTClient's job...
 int MQTTService::messageArrivedCallback(void *context, char* topicName, int topicLen, MQTTClient_message *message)
 {
     void* payloadptr;
     int hasMessageArrived;
     char* messageContent;
+    Json::Value jsonMessage;
     payloadptr = message->payload;
     messageContent = (char*)payloadptr;
 
     std::cout << "Message received on topic " << topicName << " :  " << messageContent << std::endl;
 
-    //todo send message to color thread (must be done in CommunicationManager
-    //hasMessageArrived = NetworkService::sendMessageToSocket(colorSocket, payloadptr);
+    std::string str(messageContent);
+    jsonMessage = Utils::parseJsonString(str);
 
+    std::cout << jsonMessage.get("mykey", "A Default Value if not exists" ).asString() << std::endl;
+
+    //todo send message to color thread (must be done in CommunicationManager)
+    //hasMessageArrived = NetworkService::sendMessageToSocket(colorSocket, payloadptr);
 
     // Free memory allocated to the message once it is processed
     MQTTClient_freeMessage(&message);
     MQTTClient_free(topicName);
 
-    return hasMessageArrived;   //todo return message. Needs to be changed, as message has been cleaned just before
+    return hasMessageArrived;
 }
 
 void MQTTService::connectionLost(void *context, char *cause)

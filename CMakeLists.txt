@@ -3,6 +3,12 @@ project(Controller)
 
 set(CMAKE_CXX_STANDARD 11)
 
+set(INCLUDE_DIR include)
+set(JSONCPP_DIR ${INCLUDE_DIR}/json)
+
+include_directories(${INCLUDE_DIR})
+include_directories(${JSONCPP_DIR})
+
 set(SOURCE_FILES
         main.cpp
         color.cpp
@@ -14,7 +20,12 @@ set(SOURCE_FILES
         CommunicationManager.cpp
         CommunicationManager.h
         NetworkService.cpp
-        NetworkService.h)
+        NetworkService.h
+        Utils.cpp
+        Utils.h
+        ${JSONCPP_DIR}/json.h
+        ${JSONCPP_DIR}/json-forwards.h
+        ${INCLUDE_DIR}/jsoncpp.cpp)
 
 find_package (Threads)
 

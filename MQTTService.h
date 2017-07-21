@@ -9,11 +9,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <functional>
+#include "json/json.h"
 extern "C" {
     #include <cstdlib>
     #include <cstring>
     #include <MQTTClient.h>
 }
+#include "Utils.h"
 #include "NetworkService.h"
 
 #define TIMEOUT     10000L
