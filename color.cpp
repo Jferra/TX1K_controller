@@ -47,7 +47,7 @@ void setupColorThread() {
 
     while(isColorThreadRunning){
         messageReceived = NetworkService::readMessageFromSocket(socketFileDescriptor);
-        std::cout << "Message received from Socket !" << std::endl;
+        std::cout << "ColorThread : Message received from Socket !" << std::endl;
         std::cout << messageReceived << std::endl;
 
         scan();

@@ -28,20 +28,30 @@ void MQTTService::initMQTTClient(char* brokerAddress) {
 }
 
 void MQTTService::connect() {
-    if ((retCode = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
+    int isClientConnected = false;
+
+    while(!isClientConnected)
     {
-        printf("Failed to connect, return code %d\n", retCode);
-        exit(EXIT_FAILURE);
+        if ((retCode = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
+        {
+            printf("Failed to connect, return code %d\n", retCode);
+        }
+        else
+        {
+            isClientConnected = true;
+        }
     }
 }
 
 
-void MQTTService::subscribeToTopic(char* pTopic, int pQos){
+void MQTTService::subscribeToTopic(char* pTopic, int pQos)
+{
+    std::cout << "MQTTService::subscribeToTopic " << pTopic << std::endl;
     MQTTClient_subscribe(client, pTopic, pQos);
 }
 
 void MQTTService::sendMessageToTopic(char* pTopic, char* pMessage, int pQos) {
-    pubmsg.payload = &pMessage;
+    pubmsg.payload = pMessage;
     pubmsg.payloadlen = strlen(pMessage);
     pubmsg.qos = pQos;
     pubmsg.retained = 0;
@@ -51,7 +61,6 @@ void MQTTService::sendMessageToTopic(char* pTopic, char* pMessage, int pQos) {
            (int)(TIMEOUT/1000), pMessage, pTopic, clientID);
     retCode = MQTTClient_waitForCompletion(client, token, TIMEOUT);
     printf("Message with delivery token %d delivered\n", token);
-    disconnectClient();
 }
 
 void MQTTService::unsubscribeFromTopic(char* pTopic){
@@ -74,10 +83,11 @@ int MQTTService::messageArrivedCallback(void *context, char* topicName, int topi
 {
     void* payloadptr;
     int hasMessageArrived;
-    //payloadptr = message->payload; //todo this is to correct
+    char* messageContent;
+    payloadptr = message->payload;
+    messageContent = (char*)payloadptr;
 
-    std::cout << "Message received on topic" << topicName << " !" << std::endl;
-    std::cout << payloadptr << std::endl;
+    std::cout << "Message received on topic " << topicName << " :  " << messageContent << std::endl;
 
     //todo send message to color thread (must be done in CommunicationManager
     //hasMessageArrived = NetworkService::sendMessageToSocket(colorSocket, payloadptr);

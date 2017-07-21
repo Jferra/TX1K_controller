@@ -18,10 +18,10 @@ void CommunicationManager::startCommunicationManager()
     colorSocket = startColorSocket();
 
     // Initialize MQTTService
-    /*mqtt->connect();
+    mqtt->connect();
 
     // Subscribe to topic
-    mqtt->subscribeToTopic(MQTT_TOPIC, QOS);*/
+    mqtt->subscribeToTopic(MQTT_TOPIC, QOS);
 }
 
 int CommunicationManager::startColorSocket()
