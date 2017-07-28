@@ -5,7 +5,7 @@
 #include "CommunicationManager.h"
 
 CommunicationManager::CommunicationManager() {
-    mqtt = new MQTTService(BROKER_ADDRESS, MQTT_CLIENT_ID);
+    //mqtt = new MQTTService(BROKER_ADDRESS, MQTT_CLIENT_ID);
 }
 
 CommunicationManager::~CommunicationManager(){
@@ -23,7 +23,7 @@ void CommunicationManager::startCommunicationManager()
     // Subscribe to topic
     mqtt->subscribeToTopic(MQTT_TOPIC, QOS);
 
-    char* messageToSend = "{\"mykey\" : \"KALIMBA\"}\n";
+    char* messageToSend = "{\"type\" : \"1\", \"data\" : \"KALIMBA\"}\n";
 
     mqtt->sendMessageToTopic(MQTT_TOPIC, messageToSend, QOS);
 }
