@@ -18,14 +18,14 @@ void CommunicationManager::startCommunicationManager()
     colorSocket = startColorSocket();
 
     // Initialize MQTTService
-    mqtt->connect();
+    /*mqtt->connect();
 
     // Subscribe to topic
     mqtt->subscribeToTopic(MQTT_TOPIC, QOS);
 
     char* messageToSend = "{\"type\" : \"1\", \"data\" : \"KALIMBA\"}\n";
 
-    mqtt->sendMessageToTopic(MQTT_TOPIC, messageToSend, QOS);
+    mqtt->sendMessageToTopic(MQTT_TOPIC, messageToSend, QOS);*/
 }
 
 int CommunicationManager::startColorSocket()

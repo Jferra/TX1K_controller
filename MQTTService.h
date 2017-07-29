@@ -29,8 +29,6 @@ extern "C" {
 #define SET_COLORS (1)
 
 const std::string BROKER_ADDRESS("tcp://37.187.245.213:1883");
-const std::string MQTT_CLIENT_ID("Toto");
-const int	N_RETRY_ATTEMPTS = 5;
 
 #define TIMEOUT     10000L
 
@@ -46,6 +44,7 @@ public:
 
     //MQTTClient_message pubmsg;
     //MQTTClient_deliveryToken token;
+    callback cb;
     char* clientID;
     int retCode;
 

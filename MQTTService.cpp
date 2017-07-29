@@ -44,7 +44,7 @@ void MQTTService::initMQTTClient()
     callback cb(client, connOpts);
     client.set_callback(cb);
 
-    cb->setColorSocketFd(colorSocketFileDescriptor);
+    cb.setColorSocketFd(colorSocketFileDescriptor);
 
     /*
     conn_opts = MQTTClient_connectOptions_initializer;
@@ -77,8 +77,8 @@ void MQTTService::connectClient() {
     }
     catch (const mqtt::exception&) {
         std::cerr << "\nERROR: Unable to connect to MQTT server: '"
-                  << SERVER_ADDRESS << "'" << std::endl;
-        return 1;
+                  << BROKER_ADDRESS << "'" << std::endl;
+        //return 1;
     }
 
     /*int isClientConnected = false;
@@ -106,7 +106,7 @@ void MQTTService::disconnectClient() {
     }
     catch (const mqtt::exception& exc) {
         std::cerr << exc.what() << std::endl;
-        return 1;
+        //return 1;
     }
 
     /*MQTTClient_disconnect(client, 10000);
@@ -121,11 +121,11 @@ void MQTTService::subscribeToTopic(char* pTopic, int pQos)
 }*/
 
 void MQTTService::sendMessageToTopic(const std::string pTopic, char* pMessage, const int pQos) {
-    cout << "\nSending message..." << endl;
+    std::cout << "\nSending message..." << std::endl;
     mqtt::message_ptr pubmsg = mqtt::make_message(pTopic, pMessage);
     pubmsg->set_qos(pQos);
     client.publish(pubmsg)->wait_for(TIMEOUT);
-    cout << "  ...OK" << endl;
+    std::cout << "  ...OK" << std::endl;
 
     /*pubmsg.payload = pMessage;
     pubmsg.payloadlen = strlen(pMessage);

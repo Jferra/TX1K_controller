@@ -17,6 +17,10 @@ set(SOURCE_FILES
         button.h
         MQTTService.cpp
         MQTTService.h
+        MQTTCallback.cpp
+        MQTTCallback.h
+        MQTTActionListener.cpp
+        MQTTActionListener.h
         CommunicationManager.cpp
         CommunicationManager.h
         NetworkService.cpp
@@ -25,7 +29,7 @@ set(SOURCE_FILES
         Utils.h
         ${JSONCPP_DIR}/json.h
         ${JSONCPP_DIR}/json-forwards.h
-        ${INCLUDE_DIR}/jsoncpp.cpp MQTTCallback.cpp MQTTCallback.h MQTTActionListener.cpp MQTTActionListener.h)
+        ${INCLUDE_DIR}/jsoncpp.cpp)
 
 find_package (Threads)
 

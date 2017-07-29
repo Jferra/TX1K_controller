@@ -22,7 +22,7 @@ void callback::reconnect() {
 }
 
 // Re-connection failure
-void callback::on_failure(const mqtt::token& tok) override {
+void callback::on_failure(const mqtt::token& tok) {
     std::cout << "Connection failed" << std::endl;
     if (++nretry_ > N_RETRY_ATTEMPTS)
         exit(1);
@@ -30,10 +30,10 @@ void callback::on_failure(const mqtt::token& tok) override {
 }
 
 // Re-connection success
-void callback::on_success(const mqtt::token& tok) override {
+void callback::on_success(const mqtt::token& tok) {
     std::cout << "\nConnection success" << std::endl;
     std::cout << "\nSubscribing to topic '" << TOPIC << "'\n"
-              << "\tfor client " << CLIENT_ID
+              << "\tfor client " << MQTT_CLIENT_ID
               << " using QoS" << QOS << "\n"
               << "\nPress Q<Enter> to quit\n" << std::endl;
 
@@ -42,7 +42,7 @@ void callback::on_success(const mqtt::token& tok) override {
 
 // Callback for when the connection is lost.
 // This will initiate the attempt to manually reconnect.
-void callback::connection_lost(const std::string& cause) override {
+void callback::connection_lost(const std::string& cause) {
     std::cout << "\nConnection lost" << std::endl;
     if (!cause.empty())
         std::cout << "\tcause: " << cause << std::endl;
@@ -53,7 +53,7 @@ void callback::connection_lost(const std::string& cause) override {
 }
 
 // Callback for when a message arrives.
-void callback::message_arrived(mqtt::const_message_ptr msg) override {
+void callback::message_arrived(mqtt::const_message_ptr msg) {
     std::cout << "Message arrived" << std::endl;
     std::cout << "\ttopic: '" << msg->get_topic() << "'" << std::endl;
     std::cout << "\tpayload: '" << msg->to_string() << "'\n" << std::endl;
@@ -65,11 +65,11 @@ void callback::message_arrived(mqtt::const_message_ptr msg) override {
     }
 }
 
-void callback::delivery_complete(mqtt::delivery_token_ptr token) override {}
+void callback::delivery_complete(mqtt::delivery_token_ptr token) {}
 
 callback::callback(mqtt::async_client& cli, mqtt::connect_options& connOpts)
         : nretry_(0), cli_(cli), connOpts_(connOpts), subListener_("Subscription") {}
-
+callback::~callback() {}
 
 void callback::setColorSocketFd(int socketFd)
 {
