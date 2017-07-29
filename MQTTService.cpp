@@ -15,12 +15,6 @@ void MQTTService::startMQTTServiceThread()
 
     openColorSocketServer(COLOR_SOCKET_PORT, COLOR_SOCKET_ADR);
 
-    // MQTT connection
-    while(!isClientConnected)
-    {
-        connectClient();
-    }
-
     char* messageToSend = "{\"type\" : \"1\", \"data\" : \"KALIMBA\"}\n";
 
     sendMessageToTopic(TOPIC, messageToSend, QOS);
@@ -47,6 +41,12 @@ void MQTTService::initMQTTClient()
 
     cb.setColorSocketFd(colorSocketFileDescriptor);
 
+    // MQTT connection
+    while(!isClientConnected)
+    {
+        connectClient(cb);
+    }
+
     /*
     conn_opts = MQTTClient_connectOptions_initializer;
     pubmsg = MQTTClient_message_initializer;
@@ -70,10 +70,10 @@ void MQTTService::initMQTTClient()
     conn_opts.cleansession = 1;
 }*/
 
-void MQTTService::connectClient() {
+void MQTTService::connectClient(callback pCb) {
     try {
         std::cout << "Connecting to the MQTT server..." << std::flush;
-        async_client_ptr->connect(connOpts, nullptr, cb);
+        async_client_ptr->connect(connOpts, nullptr, pCb);
         isClientConnected = true;
     }
     catch (const mqtt::exception&) {

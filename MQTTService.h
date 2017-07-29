@@ -42,7 +42,6 @@ public:
     mqtt::async_client::ptr_t async_client_ptr;
     mqtt::connect_options connOpts;
 
-    //callback cb;
     char* clientID;
     int retCode;
 
@@ -74,9 +73,10 @@ public:
     /**
      * Attempt to connect client to MQTT Broker
      * @method connectClient
+     * @param callback pCb Callback object
      * @return void
      */
-    void connectClient();
+    void connectClient(callback pCb);
 
     void disconnectClient();
 
