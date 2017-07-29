@@ -39,12 +39,10 @@ const std::string BROKER_ADDRESS("tcp://37.187.245.213:1883");
 class MQTTService {
 
 public:
-    mqtt::async_client client;
+    mqtt::async_client::ptr_t async_client_ptr;
     mqtt::connect_options connOpts;
 
-    //MQTTClient_message pubmsg;
-    //MQTTClient_deliveryToken token;
-    callback cb;
+    //callback cb;
     char* clientID;
     int retCode;
 

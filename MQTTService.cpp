@@ -6,7 +6,7 @@
 
 //volatile MQTTClient_deliveryToken deliveredToken;
 
-MQTTService::MQTTService(){}
+MQTTService::MQTTService() {}
 MQTTService::~MQTTService(){}
 
 void MQTTService::startMQTTServiceThread()
@@ -40,10 +40,10 @@ void MQTTService::initMQTTClient()
     connOpts.set_keep_alive_interval(20);
     connOpts.set_clean_session(true);
 
-    mqtt::async_client client(BROKER_ADDRESS, MQTT_CLIENT_ID);
+    async_client_ptr = std::make_shared<mqtt::async_client>(BROKER_ADDRESS, MQTT_CLIENT_ID);
 
-    callback cb(client, connOpts);
-    client.set_callback(cb);
+    callback cb(*async_client_ptr, connOpts);
+    async_client_ptr->set_callback(cb);
 
     cb.setColorSocketFd(colorSocketFileDescriptor);
 
@@ -73,7 +73,7 @@ void MQTTService::initMQTTClient()
 void MQTTService::connectClient() {
     try {
         std::cout << "Connecting to the MQTT server..." << std::flush;
-        client.connect(connOpts, nullptr, cb);
+        async_client_ptr->connect(connOpts, nullptr, cb);
         isClientConnected = true;
     }
     catch (const mqtt::exception&) {
@@ -101,7 +101,7 @@ void MQTTService::disconnectClient() {
 
     try {
         std::cout << "\nDisconnecting from the MQTT server..." << std::flush;
-        client.disconnect()->wait();
+        async_client_ptr->disconnect()->wait();
         std::cout << "OK" << std::endl;
         isClientConnected = false;
     }
@@ -125,7 +125,7 @@ void MQTTService::sendMessageToTopic(const std::string pTopic, char* pMessage, c
     std::cout << "\nSending message..." << std::endl;
     mqtt::message_ptr pubmsg = mqtt::make_message(pTopic, pMessage);
     pubmsg->set_qos(pQos);
-    client.publish(pubmsg)->wait_for(TIMEOUT);
+    async_client_ptr->publish(pubmsg)->wait_for(TIMEOUT);
     std::cout << "  ...OK" << std::endl;
 
     /*pubmsg.payload = pMessage;
