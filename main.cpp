@@ -1,7 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <wiringPi.h>
-#include "CommunicationManager.h"
+#include "MQTTService.h"
 #include "color.h"
 #include "button.h"
 

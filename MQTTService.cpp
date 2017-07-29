@@ -6,6 +6,7 @@
 
 //volatile MQTTClient_deliveryToken deliveredToken;
 
+MQTTService::MQTTService(){}
 MQTTService::~MQTTService(){}
 
 void MQTTService::startMQTTServiceThread()
