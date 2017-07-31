@@ -14,7 +14,8 @@ Json::Value Utils::parseJsonString(std::string jsonString)
     if ( !parsingSuccessful )
     {
         std::cout  << "Failed to parse"
-                   << reader.getFormattedErrorMessages();
+                   << reader.getFormattedErrorMessages()
+                   << std::endl;
         return 0;
     }
     //std::cout << jsonObject.get("mykey", "A Default Value if not exists" ).asString() << std::endl;

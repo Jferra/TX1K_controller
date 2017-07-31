@@ -72,8 +72,10 @@ void MQTTService::initMQTTClient()
 
 void MQTTService::connectClient(callback pCb) {
     try {
-        std::cout << "Connecting to the MQTT server..." << std::flush;
-        async_client_ptr->connect(connOpts, nullptr, pCb);
+        std::cout << "Connecting to the MQTT server...  " << std::endl << std::flush;
+        connection_token = async_client_ptr->connect(connOpts, nullptr, pCb);
+        connection_token->wait();
+        std::cout << "Connected to MQTT server !  " << std::endl;
         isClientConnected = true;
     }
     catch (const mqtt::exception&) {
@@ -100,7 +102,7 @@ void MQTTService::connectClient(callback pCb) {
 void MQTTService::disconnectClient() {
 
     try {
-        std::cout << "\nDisconnecting from the MQTT server..." << std::flush;
+        std::cout << "\nDisconnecting from the MQTT server... " << std::endl << std::flush;
         async_client_ptr->disconnect()->wait();
         std::cout << "OK" << std::endl;
         isClientConnected = false;

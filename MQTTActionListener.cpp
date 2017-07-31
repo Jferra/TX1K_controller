@@ -5,14 +5,14 @@
 #include "MQTTActionListener.h"
 
 void action_listener::on_failure(const mqtt::token& tok) {
-    std::cout << name_ << " failure";
+    std::cout << name_ << " failure" << std::endl;
     if (tok.get_message_id() != 0)
         std::cout << " for token: [" << tok.get_message_id() << "]" << std::endl;
     std::cout << std::endl;
 }
 
 void action_listener::on_success(const mqtt::token& tok) {
-    std::cout << name_ << " success";
+    std::cout << name_ << " success" << std::endl;
     if (tok.get_message_id() != 0)
         std::cout << " for token: [" << tok.get_message_id() << "]" << std::endl;
     auto top = tok.get_topics();

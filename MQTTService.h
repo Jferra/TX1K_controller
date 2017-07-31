@@ -41,6 +41,7 @@ class MQTTService {
 public:
     mqtt::async_client::ptr_t async_client_ptr;
     mqtt::connect_options connOpts;
+    mqtt::token_ptr connection_token;
 
     char* clientID;
     int retCode;
