@@ -77,7 +77,8 @@ public:
     static char* readMessageFromSocket(int socketFd);
 
 private:
-    NetworkService() {};
+    NetworkService();
+    virtual ~NetworkService();
 };
 
 

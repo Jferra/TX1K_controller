@@ -143,3 +143,6 @@ char* NetworkService::readMessageFromSocket(int socketFd){
     else
         return buffer;
 }
+
+NetworkService::NetworkService() {};
+NetworkService::~NetworkService() {};
