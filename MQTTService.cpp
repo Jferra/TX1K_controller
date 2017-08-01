@@ -14,10 +14,6 @@ void MQTTService::startMQTTServiceThread()
     initMQTTClient();
 
     openColorSocketServer(COLOR_SOCKET_PORT, COLOR_SOCKET_ADR);
-
-    char* messageToSend = "{\"type\" : \"1\", \"data\" : \"KALIMBA\"}\n";
-
-    sendMessageToTopic(TOPIC, messageToSend, QOS);
 }
 
 void MQTTService::openColorSocketServer(unsigned int pPort, char* pIp)
@@ -42,10 +38,16 @@ void MQTTService::initMQTTClient()
     cb.setColorSocketFd(colorSocketFileDescriptor);
 
     // MQTT connection
-    while(!isClientConnected)
+    while(!isMQTTClientConnected)
     {
-        connectClient(cb);
+        connectClient();
     }
+
+    subscribeToTopic(TOPIC, QOS);
+
+    char* messageToSend = "{\"type\" : \"1\", \"data\" : \"KALIMBA\"}\n";
+
+    sendMessageToTopic(TOPIC, messageToSend, QOS);
 
     /*
     conn_opts = MQTTClient_connectOptions_initializer;
@@ -70,13 +72,13 @@ void MQTTService::initMQTTClient()
     conn_opts.cleansession = 1;
 }*/
 
-void MQTTService::connectClient(callback pCb) {
+void MQTTService::connectClient() {
     try {
         std::cout << "Connecting to the MQTT server...  " << std::endl << std::flush;
-        connection_token = async_client_ptr->connect(connOpts, nullptr, pCb);
+        connection_token = async_client_ptr->connect(connOpts);
         connection_token->wait();
         std::cout << "Connected to MQTT server !  " << std::endl;
-        isClientConnected = true;
+        isMQTTClientConnected = true;
     }
     catch (const mqtt::exception&) {
         std::cerr << "\nERROR: Unable to connect to MQTT server: '"
@@ -105,7 +107,7 @@ void MQTTService::disconnectClient() {
         std::cout << "\nDisconnecting from the MQTT server... " << std::endl << std::flush;
         async_client_ptr->disconnect()->wait();
         std::cout << "OK" << std::endl;
-        isClientConnected = false;
+        isMQTTClientConnected = false;
     }
     catch (const mqtt::exception& exc) {
         std::cerr << exc.what() << std::endl;
@@ -116,12 +118,22 @@ void MQTTService::disconnectClient() {
     MQTTClient_destroy(&client);*/
 }
 
-/*
-void MQTTService::subscribeToTopic(char* pTopic, int pQos)
+
+void MQTTService::subscribeToTopic(const std::string pTopic, const int pQos)
 {
-    std::cout << "MQTTService::subscribeToTopic " << pTopic << std::endl;
-    MQTTClient_subscribe(client, pTopic, pQos);
-}*/
+    try {
+        mqtt::token_ptr subscribeToken;
+        std::cout << "MQTTService::subscribeToTopic " << pTopic << std::endl;
+        subscribeToken = async_client_ptr->subscribe(pTopic, pQos);
+        subscribeToken->wait();
+        std::cout << "Subscribed ! " << std::endl;
+    }
+    catch (const mqtt::exception&) {
+        std::cerr << "\nERROR: Unable to subscribe to topic: '"
+                  << pTopic << "'" << std::endl;
+        //return 1;
+    }
+}
 
 void MQTTService::sendMessageToTopic(const std::string pTopic, char* pMessage, const int pQos) {
     std::cout << "\nSending message..." << std::endl;

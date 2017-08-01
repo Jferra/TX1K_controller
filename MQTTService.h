@@ -49,7 +49,7 @@ public:
     int colorSocketFileDescriptor;
     int buttonSocketFileDescriptor;
 
-    int isClientConnected = false;
+    int isMQTTClientConnected = false;
 
     /**
      * MQTTService Constructor
@@ -74,18 +74,17 @@ public:
     /**
      * Attempt to connect client to MQTT Broker
      * @method connectClient
-     * @param callback pCb Callback object
      * @return void
      */
-    void connectClient(callback pCb);
+    void connectClient();
 
     void disconnectClient();
 
     void sendMessageToTopic(const std::string pTopic, char* pMessage, const int pQos);
 
-    /*void subscribeToTopic(char* pTopic, int pQos);
+    void subscribeToTopic(const std::string pTopic, const int pQos);
 
-    void unsubscribeFromTopic(char* pTopic);
+    /*void unsubscribeFromTopic(char* pTopic);
 
 
     static void delivered(void *context, MQTTClient_deliveryToken dt);
