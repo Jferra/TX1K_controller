@@ -59,7 +59,7 @@ int NetworkService::closeConnectionToSocket(int socketFileDescriptor){
     return closeSocket(socketFileDescriptor);
 }
 
-int NetworkService::openSocket(unsigned int port, char* ip){
+int NetworkService::openSocket(unsigned int port, char* ip){ //todo rename it to openSocketServer
     std::cout << "NetworkService::openSocket -- opening socket" << ip << ":" << port << std::endl;
 
     int socketFd,
@@ -89,6 +89,10 @@ int NetworkService::openSocket(unsigned int port, char* ip){
         error("ERROR on binding");
     else
         std::cout << "NetworkService::openSocket -- socket binding SUCCESS  " << socketFd << std::endl;
+
+    int enable = 1;
+    if (setsockopt(socketFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+        error("setsockopt(SO_REUSEADDR) failed");
 
     listen(socketFd, 5);                            //5 = waiting list of clients to be accepted
 
