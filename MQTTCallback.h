@@ -30,6 +30,8 @@ class callback : public virtual mqtt::callback,
     // Button socket File descriptor
     int buttonSocketFd = -1;
 
+    // Callback on connection success
+    void connected(const std::string& cause) override;
 
     // This demonstrates manually reconnecting to the broker by calling
     // connect() again. This is a possibility for an application that keeps

@@ -4,6 +4,14 @@
 
 #include "MQTTCallback.h"
 
+void callback::connected(const std::string& cause)
+{
+    std::cout << "\nConnection success HIPPOASPI" << std::endl;
+
+    //cli_.subscribe(TOPIC, QOS, nullptr, subListener_);    //this also causes Segmentation default
+    cli_.subscribe(TOPIC, QOS);
+}
+
 // This demonstrates manually reconnecting to the broker by calling
 // connect() again. This is a possibility for an application that keeps
 // a copy of it's original connect_options, or if the app wants to
