@@ -18,7 +18,7 @@ int main() {
     //MQTTService * mqttService = new MQTTService(BROKER_ADDRESS, MQTT_CLIENT_ID);
     MQTTService * mqttService = new MQTTService();
 
-    std::cout << "Setting up GPIOs" << std::endl;
+    std::cout << "MAIN PROGRAM --- Setting up GPIOs" << std::endl;
     wiringPiSetup();    // Setup Pins using wiringPi mapping
 
     //std::thread colorThread(setupColorThread);

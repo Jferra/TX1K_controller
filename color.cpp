@@ -43,12 +43,12 @@ void setupColorThread() {
     int colors[4] = { RED_COLOR, MAGENTA_COLOR, BLUE_COLOR, WHITE_COLOR };
     setLEDColors(colors);
 
-    std::cout << "Setup Colors completed." << std::endl;
+    std::cout << "Color::setupColorThread ---- Setup Colors completed." << std::endl;
 
     while(isColorThreadRunning){
         messageReceived = NetworkService::readMessageFromSocket(socketFileDescriptor);
-        std::cout << "ColorThread : Message received from Socket !" << std::endl;
-        std::cout << messageReceived << std::endl;
+        std::cout << "Color::setupColorThread ---- Message received from Socket !"
+                  << messageReceived << std::endl;
 
         scan();
 
@@ -65,7 +65,7 @@ void setupColorThread() {
             color_index = 0;
         }
     }
-    std::cout << "Color process ended." << std::endl;
+    std::cout << "Color::setupColorThread ---- Color process ended." << std::endl;
 }
 
 /**

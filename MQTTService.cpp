@@ -74,14 +74,14 @@ void MQTTService::initMQTTClient()
 
 void MQTTService::connectClient() {
     try {
-        std::cout << "Connecting to the MQTT server...  " << std::endl << std::flush;
+        std::cout << "MQTTService::connectClient ---- Connecting to the MQTT server...  " << std::endl << std::flush;
         connection_token = async_client_ptr->connect(connOpts);
         connection_token->wait();
-        std::cout << "Connected to MQTT server !  " << std::endl;
+        std::cout << "MQTTService::connectClient ---- Connected to MQTT server !  " << std::endl;
         isMQTTClientConnected = true;
     }
     catch (const mqtt::exception&) {
-        std::cerr << "\nERROR: Unable to connect to MQTT server: '"
+        std::cerr << "\nMQTTService::connectClient ---- ERROR: Unable to connect to MQTT server: '"
                   << BROKER_ADDRESS << "'" << std::endl;
         //return 1;
     }
@@ -104,9 +104,9 @@ void MQTTService::connectClient() {
 void MQTTService::disconnectClient() {
 
     try {
-        std::cout << "\nDisconnecting from the MQTT server... " << std::endl << std::flush;
+        std::cout << "\nMQTTService::disconnectClient ---- Disconnecting from the MQTT server... " << std::endl << std::flush;
         async_client_ptr->disconnect()->wait();
-        std::cout << "OK" << std::endl;
+        std::cout << "MQTTService::disconnectClient ---- OK" << std::endl;
         isMQTTClientConnected = false;
     }
     catch (const mqtt::exception& exc) {
@@ -123,24 +123,25 @@ void MQTTService::subscribeToTopic(const std::string pTopic, const int pQos)
 {
     try {
         mqtt::token_ptr subscribeToken;
-        std::cout << "MQTTService::subscribeToTopic " << pTopic << std::endl;
+        std::cout << "MQTTService::subscribeToTopic ---- Topic name :" << pTopic << std::endl;
         subscribeToken = async_client_ptr->subscribe(pTopic, pQos);
         subscribeToken->wait();
-        std::cout << "Subscribed ! " << std::endl;
+        std::cout << "MQTTService::subscribeToTopic ---- Subscribed ! " << std::endl;
     }
     catch (const mqtt::exception&) {
-        std::cerr << "\nERROR: Unable to subscribe to topic: '"
+        std::cerr << "\nMQTTService::subscribeToTopic ---- ERROR: Unable to subscribe to topic: '"
                   << pTopic << "'" << std::endl;
         //return 1;
     }
 }
 
 void MQTTService::sendMessageToTopic(const std::string pTopic, char* pMessage, const int pQos) {
-    std::cout << "\nSending message..." << std::endl;
+    std::cout << "\nMQTTService::sendMessageToTopic ---- Sending message..." << pMessage
+              << " on topic :" << pTopic << std::endl;
     mqtt::message_ptr pubmsg = mqtt::make_message(pTopic, pMessage);
     pubmsg->set_qos(pQos);
     async_client_ptr->publish(pubmsg)->wait_for(TIMEOUT);
-    std::cout << "  ...OK" << std::endl;
+    std::cout << "MQTTService::sendMessageToTopic ---- Message sent" << std::endl;
 
     /*pubmsg.payload = pMessage;
     pubmsg.payloadlen = strlen(pMessage);

@@ -13,7 +13,7 @@ Json::Value Utils::parseJsonString(std::string jsonString)
     bool parsingSuccessful = reader.parse( jsonString.c_str(), jsonObject );     //parse process
     if ( !parsingSuccessful )
     {
-        std::cout  << "Failed to parse"
+        std::cout  << "Utils::parseJsonString ---- Failed to parse"
                    << reader.getFormattedErrorMessages()
                    << std::endl;
         return 0;

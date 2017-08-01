@@ -25,12 +25,12 @@ void setupButtonThread()
     // init global variables
     btn_index = 0;
 
-    std::cout << "Setup Buttons completed." << std::endl;
+    std::cout << "Button::setupButtonThread ---- Setup Buttons completed." << std::endl;
 
     while(isButtonThreadRunning){
         scan();
     }
-    std::cout << "Button process ended." << std::endl;
+    std::cout << "Button::setupButtonThread ---- Button process ended." << std::endl;
 }
 
 /**
@@ -107,5 +107,5 @@ static void scan()
 static void sendButtonPressedEvent(int8_t btnId)
 {
     //todo send to communication thread a message
-    std::cout << "Button pressed !" << unsigned(btnId) << std::endl;
+    std::cout << "Button::sendButtonPressedEvent ---- Button pressed !" << unsigned(btnId) << std::endl;
 }
