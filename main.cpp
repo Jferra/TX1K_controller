@@ -21,11 +21,11 @@ int main() {
     std::cout << "MAIN PROGRAM --- Setting up GPIOs" << std::endl;
     wiringPiSetup();    // Setup Pins using wiringPi mapping
 
-    //std::thread colorThread(setupColorThread);
+    std::thread colorThread(setupColorThread);
     //std::thread buttonThread(setupButtonThread);
     std::thread mqttServiceThread(std::bind(&MQTTService::startMQTTServiceThread, mqttService));
 
-    //colorThread.join();
+    colorThread.join();
     //buttonThread.join();
     mqttServiceThread.join();
 //

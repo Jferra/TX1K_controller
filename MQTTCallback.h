@@ -26,9 +26,9 @@ class callback : public virtual mqtt::callback,
     // An action listener to display the result of actions.
     action_listener subListener_;
     // Color socket File descriptor
-    int colorSocketFd = -1;
+    int *colorSocketFd;
     // Button socket File descriptor
-    int buttonSocketFd = -1;
+    int *buttonSocketFd;
 
     // Callback on connection success
     void connected(const std::string& cause) override;
@@ -60,9 +60,9 @@ public:
     callback(mqtt::async_client& cli, mqtt::connect_options& connOpts);
     virtual ~callback();
 
-    void setColorSocketFd(int socketFd);
+    void setColorSocketFd(int *socketFd);
 
-    void setButtonSocketFd(int socketFd);
+    void setButtonSocketFd(int *socketFd);
 };
 
 #endif //CONTROLLER_MQTTCALLBACK_H

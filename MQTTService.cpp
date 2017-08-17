@@ -11,9 +11,9 @@ MQTTService::~MQTTService(){}
 
 void MQTTService::startMQTTServiceThread()
 {
-    initMQTTClient();
-
     openColorSocketServer(COLOR_SOCKET_PORT, COLOR_SOCKET_ADR);
+
+    initMQTTClient();
 }
 
 void MQTTService::openColorSocketServer(unsigned int pPort, char* pIp)
@@ -27,6 +27,7 @@ void MQTTService::openButtonSocketServer(unsigned int pPort, char* pIp)
 
 void MQTTService::initMQTTClient()
 {
+    std::cout << "MQTTService::initMQTTClient ---- BEGINNING OF FUNCTION " << std::endl;
     connOpts.set_keep_alive_interval(20);
     connOpts.set_clean_session(true);
 
@@ -35,10 +36,10 @@ void MQTTService::initMQTTClient()
     callback cb(*async_client_ptr, connOpts);
     async_client_ptr->set_callback(cb);
 
-    cb.setColorSocketFd(colorSocketFileDescriptor);
+    cb.setColorSocketFd(&colorSocketFileDescriptor);
 
     // MQTT connection
-    while(!isMQTTClientConnected)
+    /*while(!isMQTTClientConnected)
     {
         connectClient();
     }
@@ -47,7 +48,7 @@ void MQTTService::initMQTTClient()
 
     char* messageToSend = "{\"type\" : \"1\", \"data\" : \"KALIMBA\"}\n";
 
-    sendMessageToTopic(TOPIC, messageToSend, QOS);
+    sendMessageToTopic(TOPIC, messageToSend, QOS);*/
 
     /*
     conn_opts = MQTTClient_connectOptions_initializer;

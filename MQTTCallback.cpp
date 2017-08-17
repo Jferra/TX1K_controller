@@ -67,7 +67,7 @@ void callback::message_arrived(mqtt::const_message_ptr msg) {
     std::cout << "\tMQTTCallback::message_arrived ---- payload: '" << msg->to_string() << "'\n" << std::endl;
 
     //todo see async_subscribe
-    if(colorSocketFd != -1)
+    if(colorSocketFd != NULL)
     {
         // send message to socket
     }
@@ -79,12 +79,14 @@ callback::callback(mqtt::async_client& cli, mqtt::connect_options& connOpts)
         : nretry_(0), cli_(cli), connOpts_(connOpts), subListener_("Subscription") {}
 callback::~callback() {}
 
-void callback::setColorSocketFd(int socketFd)
+void callback::setColorSocketFd(int *socketFd)
 {
+    std::cout << "MQTTCallback::setColorSocketFd ---- given socketFd: "
+              << socketFd << std::endl;
     colorSocketFd = socketFd;
 }
 
-void callback::setButtonSocketFd(int socketFd)
+void callback::setButtonSocketFd(int *socketFd)
 {
     buttonSocketFd = socketFd;
 }
