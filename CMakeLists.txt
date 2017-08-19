@@ -21,8 +21,6 @@ set(SOURCE_FILES
         MQTTCallback.h
         MQTTActionListener.cpp
         MQTTActionListener.h
-        CommunicationManager.cpp
-        CommunicationManager.h
         NetworkService.cpp
         NetworkService.h
         Utils.cpp
