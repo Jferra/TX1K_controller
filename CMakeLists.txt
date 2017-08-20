@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(Controller)
 
 set(CMAKE_CXX_STANDARD 11)
-
+#set(CMAKE_BUILD_TYPE Debug)
 set(INCLUDE_DIR include)
 set(JSONCPP_DIR ${INCLUDE_DIR}/json)
 
