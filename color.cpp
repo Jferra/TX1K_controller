@@ -20,6 +20,25 @@
 #define YELLOW_COLOR (5)
 #define WHITE_COLOR (6)
 
+
+template<typename Out>
+void split(const std::string &s, char delim, Out result) {
+    std::stringstream ss;
+    ss.str(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        *(result++) = item;
+    }
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, std::back_inserter(elems));
+    return elems;
+}
+
+
 /**
  * Starts the process concerning LEDs management
  * @method setupColorThread
@@ -28,6 +47,8 @@ void setupColorThread() {
 
     int socketFileDescriptor;
     char messageReceived[256];
+
+    int msgReturnCode;
 
     // setup hardware
     setupPins();
@@ -46,12 +67,6 @@ void setupColorThread() {
     std::cout << "Color::setupColorThread ---- Setup Colors completed." << std::endl;
 
     while (isColorThreadRunning) {
-        if (NetworkService::readMessageFromSocket(socketFileDescriptor, messageReceived, 256) < 0) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            continue;
-        }
-        std::cout << "Color::setupColorThread ---- Message received from Socket !"
-                  << messageReceived << std::endl;
         scan();
 
         if (led_index == 4) {
@@ -66,8 +81,70 @@ void setupColorThread() {
         if (color_index == 3) {
             color_index = 0;
         }
+
+        int count;
+        ioctl(socketFileDescriptor, FIONREAD, &count);
+
+        if (count > 0) {
+            msgReturnCode = NetworkService::readMessageFromSocket(socketFileDescriptor, messageReceived, 256);
+            std::cout << "Color::setupColorThread ---- read in socket"
+                      << messageReceived
+                      << std::endl;
+
+            std::vector<std::string> toto = split(messageReceived, ',');
+            std::string * array = &toto[0];
+            debugArray(array, 4);
+
+            std::cout << "=========" << std::endl;
+
+            int *intColors = getIntColors(array);
+            // int intColors[4] = {2, 2, 2, 2};
+            debugArray(intColors, 4);
+
+            setLEDColors(intColors);
+        }
+        //if (NetworkService::readMessageFromSocket(socketFileDescriptor, messageReceived, 256) < 0) {
+            //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            //std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            //continue;
+        //}
+        /*std::cout << "Color::setupColorThread ---- Message received from Socket !"
+                  << messageReceived << std::endl;*/
+
     }
     std::cout << "Color::setupColorThread ---- Color process ended." << std::endl;
+}
+
+void debugArray(std::string * arr, int ito) {
+    std::string* it(0);
+    int c = 0;
+    do  {
+        it = &arr[c];
+        std::cout << "TEST _____ " << *it << std::endl;
+        ++c;
+    } while (c < ito);
+}
+
+void debugArray(int * arr, int ito) {
+    int * it(0);
+    int c = 0;
+    do  {
+        it = &arr[c];
+        std::cout << "TEST _____ " << *it << std::endl;
+        ++c;
+    } while (c < ito);
+}
+
+int* getIntColors(std::string * arr) {
+    int res[4];
+    std::string* it(0);
+    int c = 0;
+    do  {
+        it = &arr[c];
+        res[c] = stoi(*it);
+        ++c;
+    } while (c < 4);
+    return &res[0];
 }
 
 /**

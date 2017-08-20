@@ -11,6 +11,9 @@
 #include <chrono>
 #include <thread>
 #include <wiringPi.h>
+#include <sstream>
+#include <vector>
+#include <sys/ioctl.h>
 #include "NetworkService.h"
 
 #define NUM_LED_COLUMNS (4)
@@ -30,7 +33,7 @@
 #define WHITE_COLOR (6)
 
 #define COLOR_SOCKET_ADR    "127.0.0.1"
-#define COLOR_SOCKET_PORT   45001
+#define COLOR_SOCKET_PORT   45003
 static bool LED_colors[NUM_LED_COLUMNS][NUM_COLORS];    // Mapping grid of LED colors
 
 static uint8_t led_index;
@@ -42,6 +45,18 @@ static const uint8_t ledcolumnpins[NUM_LED_COLUMNS] = {1, 4, 5, 6};
 static const uint8_t colorpins[NUM_COLORS] = {0, 3, 2};
 
 static bool isColorThreadRunning = true;
+
+
+
+void debugArray(std::string * arr, int it);
+void debugArray(int * arr, int it);
+int* getIntColors(std::string * arr);
+
+
+template<typename Out>
+void split(const std::string &s, char delim, Out result);
+
+std::vector<std::string> split(const std::string &s, char delim);
 
 /**
  * Sets everything to start the Color thread
@@ -62,5 +77,7 @@ static void scan();
  * Set all colors
  */
 static void setLEDColors(int colors[4]);
+
+
 
 #endif //CONTROLLER_COLOR_H

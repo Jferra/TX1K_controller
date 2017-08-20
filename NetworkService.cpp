@@ -122,7 +122,9 @@ int NetworkService::closeSocket(int socketFileDescriptor) {
     return returnCode;
 }
 
-int NetworkService::sendMessageToSocket(int socketFd, char *message) {
+int NetworkService::sendMessageToSocket(int socketFd, const char *message) {
+    std::cout << "NetworkService::sendMessageToSocket ---- Sending message to socket... "
+              << message << std::endl;
     //this is to put in an infinite loop server-side -> writes a message when asked (?)
     int returnCode;
     char buffer[256];
@@ -135,6 +137,8 @@ int NetworkService::sendMessageToSocket(int socketFd, char *message) {
 }
 
 int NetworkService::readMessageFromSocket(int socketFd, char *buffer, const int length) {
+    std::cout << "NetworkService::readMessageFromSocket ---- Reading message from socket... "
+              << std::endl;
     int returnCode;
     //char buffer[256];
     //memset(buffer, 0, 256);

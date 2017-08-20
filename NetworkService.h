@@ -66,7 +66,7 @@ public:
      * @param message   Message to send
      * @return
      */
-    static int sendMessageToSocket(int socketFd, char* message);
+    static int sendMessageToSocket(int socketFd, const char* message);
 
     /**
      * Read a received message from the socket

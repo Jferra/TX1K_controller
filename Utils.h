@@ -16,9 +16,9 @@ public:
      * Creates a Json Object from a given Json string
      * @method parseJsonString
      * @param std::string jsonString
-     * @return Json::Value jsonObject
+     * @return bool parsingSuccessful
      */
-    static Json::Value parseJsonString(std::string jsonString);
+    static bool parseJsonString(std::string jsonString, Json::Value * jsonObject);
 
 private:
     Utils() {};

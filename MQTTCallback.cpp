@@ -62,14 +62,39 @@ void callback::connection_lost(const std::string& cause) {
 
 // Callback for when a message arrives.
 void callback::message_arrived(mqtt::const_message_ptr msg) {
+    Json::Value jsonMsg;
+    std::string msgType;
+    bool isMsgConversionOk;
+    std::string msgContent;
+    const char * convertedMsgContent;
+
+    int returnCode;
     std::cout << "MQTTCallback::message_arrived ---- Message arrived" << std::endl;
     std::cout << "\tMQTTCallback::message_arrived ---- topic: '" << msg->get_topic() << "'" << std::endl;
     std::cout << "\tMQTTCallback::message_arrived ---- payload: '" << msg->to_string() << "'\n" << std::endl;
 
-    //todo see async_subscribe
     if(colorSocketFd != NULL)
     {
-        // send message to socket
+        isMsgConversionOk = Utils::parseJsonString(msg->to_string(), &jsonMsg);
+
+        if(isMsgConversionOk)
+        {
+            msgType = jsonMsg.get("type", "This key doesn't exist!").asString();
+            std::cout << "MQTTCallback::message_arrived ---- Message type =" << msgType << std::endl;
+            if(msgType.compare("1") == 0)
+            {
+                std::cout << "MQTTCallback::message_arrived ---- It's to change colors!" << std::endl;
+
+                msgContent = jsonMsg.get("data", "No data in message...").asString();
+                msgContent += '\n';
+                convertedMsgContent = msgContent.c_str();
+                returnCode = NetworkService::sendMessageToSocket(*colorSocketFd, convertedMsgContent);
+
+                std::cout << "MQTTCallback::message_arrived ---- sendMessageToSocket returnCode"
+                          << returnCode
+                          << std::endl;
+            }
+        }
 
     }
 }

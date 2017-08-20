@@ -52,20 +52,15 @@ void MQTTService::initMQTTClient()
 
     subscribeToTopic(TOPIC, QOS);
 
-    char * msg = "toto !!!!!!";
+    /*char * msg = "toto !!!!!!";
+    char* messageToSend = "{\"type\" : \"1\", \"data\" : \"0,2,3,4\"}\n";
+
     while(isMQTTClientConnected){
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        sendMessageToTopic(TOPIC, msg, QOS);
-    }
+        sendMessageToTopic(TOPIC, messageToSend, QOS);
+    }*/
 
 }
-/*void MQTTService::initMQTTClient(char* brokerAddress) {
-    MQTTClient_create(&client, brokerAddress, clientID,
-                      MQTTCLIENT_PERSISTENCE_NONE, NULL);
-    conn_opts.keepAliveInterval = 20;
-    conn_opts.cleansession = 1;
-}*/
-
 void MQTTService::connectClient() {
     try {
         std::cout << "MQTTService::connectClient ---- Connecting to the MQTT server...  " << std::endl << std::flush;
@@ -79,20 +74,6 @@ void MQTTService::connectClient() {
                   << BROKER_ADDRESS << "'" << std::endl;
         //return 1;
     }
-
-    /*int isClientConnected = false;
-
-    while(!isClientConnected)
-    {
-        if ((retCode = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
-        {
-            printf("Failed to connect, return code %d\n", retCode);
-        }
-        else
-        {
-            isClientConnected = true;
-        }
-    }*/
 }
 
 void MQTTService::disconnectClient() {
@@ -107,9 +88,6 @@ void MQTTService::disconnectClient() {
         std::cerr << exc.what() << std::endl;
         //return 1;
     }
-
-    /*MQTTClient_disconnect(client, 10000);
-    MQTTClient_destroy(&client);*/
 }
 
 

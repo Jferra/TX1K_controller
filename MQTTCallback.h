@@ -5,7 +5,11 @@
 #ifndef CONTROLLER_MQTTCALLBACK_H
 #define CONTROLLER_MQTTCALLBACK_H
 
+#include "json/json.h"
+
 #include "MQTTActionListener.h"
+#include "NetworkService.h"
+#include "Utils.h"
 
 const std::string MQTT_CLIENT_ID("Toto");
 const std::string TOPIC("totopic");

@@ -4,21 +4,22 @@
 
 #include "Utils.h"
 
-Json::Value Utils::parseJsonString(std::string jsonString)
+bool Utils::parseJsonString(std::string jsonString, Json::Value * jsonObject)
 {
     //std::string strJson = "{\"mykey\" : \"myvalue\"}"; // need escape the quotes
 
-    Json::Value jsonObject;
+    //Json::Value jsonObject;
     Json::Reader reader;
-    bool parsingSuccessful = reader.parse( jsonString.c_str(), jsonObject );     //parse process
+    bool parsingSuccessful = reader.parse( jsonString.c_str(), *jsonObject );     //parse process
     if ( !parsingSuccessful )
     {
         std::cout  << "Utils::parseJsonString ---- Failed to parse"
                    << reader.getFormattedErrorMessages()
                    << std::endl;
-        return 0;
     }
+    std::cout  << "Utils::parseJsonString ---- Success parsing"
+               << jsonObject->get("type", "MELKFJSMEL").asString()
+               << std::endl;
+    return parsingSuccessful;
     //std::cout << jsonObject.get("mykey", "A Default Value if not exists" ).asString() << std::endl;
-
-    return jsonObject;
 }

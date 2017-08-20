@@ -28,6 +28,7 @@ int main() {
     colorThread.join();
     //buttonThread.join();
     mqttServiceThread.join();
+
 //
 //    mqttService->openColorSocketServer(COLOR_SOCKET_PORT, COLOR_SOCKET_ADR);
 //
