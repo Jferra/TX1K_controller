@@ -28,20 +28,21 @@ extern "C" {
 #define BUTTON_PRESSED (0)
 #define SET_COLORS (1)
 
-const std::string BROKER_ADDRESS("tcp://37.187.245.213:1883");
+const char * const BROKER_ADDRESS = "tcp://37.187.245.213:1883";
 
 #define TIMEOUT     10000L
 
-#define COLOR_SOCKET_ADR    "127.0.0.1"
-#define COLOR_SOCKET_PORT   45000
+const char * const COLOR_SOCKET_ADR = "127.0.0.1";
+#define COLOR_SOCKET_PORT   45001
 
 
 class MQTTService {
 
 public:
-    mqtt::async_client::ptr_t async_client_ptr;
+    mqtt::async_client_ptr async_client_ptr;
     mqtt::connect_options connOpts;
     mqtt::token_ptr connection_token;
+    callback * m_callback;
 
     char* clientID;
     int retCode;
@@ -49,7 +50,7 @@ public:
     int colorSocketFileDescriptor;
     int buttonSocketFileDescriptor;
 
-    int isMQTTClientConnected = false;
+    bool isMQTTClientConnected = false;
 
     /**
      * MQTTService Constructor
@@ -61,15 +62,14 @@ public:
 
     void startMQTTServiceThread();
 
-    void openColorSocketServer(unsigned int pPort, char* pIp);
-    void openButtonSocketServer(unsigned int pPort, char* pIp);
+    void openColorSocketServer(unsigned int pPort, const char* pIp);
+    void openButtonSocketServer(unsigned int pPort, const char* pIp);
 
     /**
      * Initializes the MQTT Client and connects it to the given broker
      * @method initMQTTClient
      */
     void initMQTTClient();
-    //void initMQTTClient(char* brokerAddress);
 
     /**
      * Attempt to connect client to MQTT Broker
@@ -84,14 +84,6 @@ public:
 
     void subscribeToTopic(const std::string pTopic, const int pQos);
 
-    /*void unsubscribeFromTopic(char* pTopic);
-
-
-    static void delivered(void *context, MQTTClient_deliveryToken dt);
-
-    static int messageArrivedCallback(void *context, char* topicName, int topicLen, MQTTClient_message *message);
-
-    static void connectionLost(void *context, char *cause);*/
 };
 
 

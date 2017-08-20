@@ -7,7 +7,12 @@
 //volatile MQTTClient_deliveryToken deliveredToken;
 
 MQTTService::MQTTService() {}
-MQTTService::~MQTTService(){}
+MQTTService::~MQTTService(){
+
+    if(m_callback)
+        delete m_callback;
+
+}
 
 void MQTTService::startMQTTServiceThread()
 {
@@ -16,11 +21,11 @@ void MQTTService::startMQTTServiceThread()
     initMQTTClient();
 }
 
-void MQTTService::openColorSocketServer(unsigned int pPort, char* pIp)
+void MQTTService::openColorSocketServer(unsigned int pPort, const char* pIp)
 {
     colorSocketFileDescriptor = NetworkService::openSocket(pPort, pIp);
 }
-void MQTTService::openButtonSocketServer(unsigned int pPort, char* pIp)
+void MQTTService::openButtonSocketServer(unsigned int pPort, const char* pIp)
 {
     buttonSocketFileDescriptor = NetworkService::openSocket(pPort, pIp);
 }
@@ -33,38 +38,26 @@ void MQTTService::initMQTTClient()
 
     async_client_ptr = std::make_shared<mqtt::async_client>(BROKER_ADDRESS, MQTT_CLIENT_ID);
 
-    callback cb(*async_client_ptr, connOpts);
-    async_client_ptr->set_callback(cb);
-
-    cb.setColorSocketFd(&colorSocketFileDescriptor);
+    m_callback  = new callback(*async_client_ptr, connOpts);
+    async_client_ptr->set_callback(*m_callback);
 
     // MQTT connection
-    /*while(!isMQTTClientConnected)
+    while(!isMQTTClientConnected)
     {
         connectClient();
+        //todo add delay 1-2sec
     }
+
+    m_callback->setColorSocketFd(&colorSocketFileDescriptor);
 
     subscribeToTopic(TOPIC, QOS);
 
-    char* messageToSend = "{\"type\" : \"1\", \"data\" : \"KALIMBA\"}\n";
+    char * msg = "toto !!!!!!";
+    while(isMQTTClientConnected){
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        sendMessageToTopic(TOPIC, msg, QOS);
+    }
 
-    sendMessageToTopic(TOPIC, messageToSend, QOS);*/
-
-    /*
-    conn_opts = MQTTClient_connectOptions_initializer;
-    pubmsg = MQTTClient_message_initializer;
-    clientID = pClientID;
-
-    MQTTClient_create(&client,
-                      brokerAddress,
-                      clientID,
-                      MQTTCLIENT_PERSISTENCE_NONE,
-                      NULL);
-    conn_opts.keepAliveInterval = 20;
-    conn_opts.cleansession = 1;
-
-    // Set MQTTClient callbacks
-    MQTTClient_setCallbacks(client, NULL, connectionLost, messageArrivedCallback, delivered);*/
 }
 /*void MQTTService::initMQTTClient(char* brokerAddress) {
     MQTTClient_create(&client, brokerAddress, clientID,
@@ -141,68 +134,7 @@ void MQTTService::sendMessageToTopic(const std::string pTopic, char* pMessage, c
               << " on topic :" << pTopic << std::endl;
     mqtt::message_ptr pubmsg = mqtt::make_message(pTopic, pMessage);
     pubmsg->set_qos(pQos);
-    async_client_ptr->publish(pubmsg)->wait_for(TIMEOUT);
+    async_client_ptr->publish(pubmsg);//->wait_for(TIMEOUT);
     std::cout << "MQTTService::sendMessageToTopic ---- Message sent" << std::endl;
 
-    /*pubmsg.payload = pMessage;
-    pubmsg.payloadlen = strlen(pMessage);
-    pubmsg.qos = pQos;
-    pubmsg.retained = 0;
-    MQTTClient_publishMessage(client, pTopic, &pubmsg, &token);
-    printf("Waiting for up to %d seconds for publication of %s\n"
-                   "on topic %s for client with ClientID: %s\n",
-           (int)(TIMEOUT/1000), pMessage, pTopic, clientID);
-    retCode = MQTTClient_waitForCompletion(client, token, TIMEOUT);
-    printf("Message with delivery token %d delivered\n", token);*/
 }
-/*
-void MQTTService::unsubscribeFromTopic(char* pTopic){
-    MQTTClient_unsubscribe(clientID, pTopic);
-}
-
-
-void MQTTService::delivered(void *context, MQTTClient_deliveryToken dt)
-{
-    printf("Message with token value %d delivery confirmed\n", dt);
-    deliveredToken = dt;
-}
-
-int MQTTService::messageArrivedCallback(void *context, char* topicName, int topicLen, MQTTClient_message *message)
-{
-    void* payloadptr;
-    int hasMessageArrived;
-    char* messageContent;
-    Json::Value jsonMessage;
-    payloadptr = message->payload;
-    messageContent = (char*)payloadptr;
-
-    std::cout << "Message received on topic " << topicName << " :  " << messageContent << std::endl;
-
-    std::string str(messageContent);
-    jsonMessage = Utils::parseJsonString(str);
-
-    std::cout << jsonMessage.get("mykey", "A Default Value if not exists" ).asString() << std::endl;
-
-    /*switch(std::stoi(jsonMessage.get("type", "null").asString()))
-    {
-        case BUTTON_PRESSED:
-            hasMessageArrived = NetworkService::sendMessageToSocket(colorSocketFileDescriptor, jsonMessage.get("data", "null").asString());
-            break;
-        case SET_COLORS:
-            hasMessageArrived = NetworkService::sendMessageToSocket(buttonSocketFileDescriptor, jsonMessage.get("data", "null").asString());
-            break;
-
-    }*/
-
-    // Free memory allocated to the message once it is processed
-    /*MQTTClient_freeMessage(&message);
-    MQTTClient_free(topicName);
-
-    return hasMessageArrived;
-}
-
-void MQTTService::connectionLost(void *context, char *cause)
-{
-    printf("\nConnection lost\n");
-    printf("     cause: %s\n", cause);
-}*/

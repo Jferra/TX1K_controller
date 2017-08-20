@@ -70,10 +70,13 @@ void callback::message_arrived(mqtt::const_message_ptr msg) {
     if(colorSocketFd != NULL)
     {
         // send message to socket
+
     }
 }
 
-void callback::delivery_complete(mqtt::delivery_token_ptr token) {}
+void callback::delivery_complete(mqtt::delivery_token_ptr token) {
+    std::cout << "MQTTCallback:: Message delivered " << std::endl;
+}
 
 callback::callback(mqtt::async_client& cli, mqtt::connect_options& connOpts)
         : nretry_(0), cli_(cli), connOpts_(connOpts), subListener_("Subscription") {}
