@@ -33,7 +33,7 @@ public:
      * @param ip    Socket IP
      * @return socketFileDescriptor
      */
-    static int connectToSocket(unsigned int port, char* ip);
+    static int connectToSocket(unsigned int port, const char* ip);
 
     /**
      * Close client connection from a socket
@@ -49,7 +49,7 @@ public:
      * @param ip    Socket IP
      * @return
      */
-    static int openSocket(unsigned int port, char* ip);
+    static int openSocket(unsigned int port, const char* ip);
 
     /**
      * Close the socket
@@ -71,10 +71,12 @@ public:
     /**
      * Read a received message from the socket
      * @method readMessageFromSocket
-     * @param socketFd  Socket File descriptor
-     * @return message  Received message
+     * @param socketFd      Socket File descriptor
+     * @param buffer        Message buffer
+     * @param length        Buffer length
+     * @return returnCode   Reading message return code
      */
-    static char* readMessageFromSocket(int socketFd);
+    static int readMessageFromSocket(int socketFd, char * buffer, const int length);
 
 private:
     NetworkService();

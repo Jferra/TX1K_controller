@@ -9,7 +9,7 @@ void NetworkService::error(const char *msg) {
     exit(0);
 }
 
-int NetworkService::connectToSocket(unsigned int port, char* ip){
+int NetworkService::connectToSocket(unsigned int port, const char *ip) {
     int socketFd;
     bool isConnectionEstablished = false;
     struct sockaddr_in serverAddress;
@@ -29,8 +29,8 @@ int NetworkService::connectToSocket(unsigned int port, char* ip){
 
     memset((char *) &serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
-    bcopy((char *)server->h_addr,//h_addr -> contains server IP address. Here, we copy the IP address to serverAddress struct
-          (char *)&serverAddress.sin_addr.s_addr,
+    bcopy((char *) server->h_addr,//h_addr -> contains server IP address. Here, we copy the IP address to serverAddress struct
+          (char *) &serverAddress.sin_addr.s_addr,
           server->h_length);
     serverAddress.sin_port = htons(port);
 
@@ -39,15 +39,13 @@ int NetworkService::connectToSocket(unsigned int port, char* ip){
     std::cout << "NetworkService::connectToSocket ---- Port : " << serverAddress.sin_port << std::endl;
 
     // Try to connect to socket until connection is established
-    while(!isConnectionEstablished){
+    while (!isConnectionEstablished) {
         //std::cout << "NetworkService::connectToSocket ---- Attempting to connect to socket " << ip << ":" << port << "..." << std::endl;
 
         // try to connect to the server
-        if (connect(socketFd,(struct sockaddr *) &serverAddress,sizeof(serverAddress)) < 0)
-        {
+        if (connect(socketFd, (struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0) {
             //perror("NetworkService::connectToSocket ---- ERROR connecting");
-        } else
-        {
+        } else {
             isConnectionEstablished = true;
             std::cout << "NetworkService::connectToSocket ---- Connected to " << ip << ":" << port << std::endl;
             return socketFd;
@@ -55,23 +53,23 @@ int NetworkService::connectToSocket(unsigned int port, char* ip){
     }
 }
 
-int NetworkService::closeConnectionToSocket(int socketFileDescriptor){
+int NetworkService::closeConnectionToSocket(int socketFileDescriptor) {
     return closeSocket(socketFileDescriptor);
 }
 
-int NetworkService::openSocket(unsigned int port, char* ip){ //todo rename it to openSocketServer
+int NetworkService::openSocket(unsigned int port, const char *ip) { //todo rename it to openSocketServer
     std::cout << "NetworkService::openSocket -- opening socket" << ip << ":" << port << std::endl;
 
     int socketFd,
-        clientSocketFd,
-        n;
+            clientSocketFd,
+            n;
 
     bool isClientConnected = false;
     socklen_t cliLength;                            // client length
     char buffer[256];                               //reception buffer
 
     sockaddr_in serverAddress,
-                clientAddress;
+            clientAddress;
 
 
     socketFd = socket(AF_INET, SOCK_STREAM, 0);     // Create socket
@@ -96,16 +94,15 @@ int NetworkService::openSocket(unsigned int port, char* ip){ //todo rename it to
 
     listen(socketFd, 5);                            //5 = waiting list of clients to be accepted
 
-    while(!isClientConnected)
-    {
+    while (!isClientConnected) {
         std::cout << "NetworkService::openSocket ---- Waiting for client connection..." << std::endl;
         cliLength = sizeof(clientAddress);
         // Accept first connection
         clientSocketFd = accept(socketFd,
-                             (struct sockaddr *) &clientAddress,
-                             &cliLength);    // allocation of client address memory needed
+                                (struct sockaddr *) &clientAddress,
+                                &cliLength);    // allocation of client address memory needed
 
-        if(clientSocketFd < 0)
+        if (clientSocketFd < 0)
             error("NetworkService::openSocket ---- ERROR while accepting client connection");
         else
             isClientConnected = true;
@@ -115,38 +112,38 @@ int NetworkService::openSocket(unsigned int port, char* ip){ //todo rename it to
     return clientSocketFd;
 }
 
-int NetworkService::closeSocket(int socketFileDescriptor){
+int NetworkService::closeSocket(int socketFileDescriptor) {
     int returnCode;
     returnCode = close(socketFileDescriptor);
 
-    if(returnCode < 0)
+    if (returnCode < 0)
         error("NetworkService::closeSocket ---- ERROR closing connection to socket");
 
     return returnCode;
 }
 
-int NetworkService::sendMessageToSocket(int socketFd, char* message){
+int NetworkService::sendMessageToSocket(int socketFd, char *message) {
     //this is to put in an infinite loop server-side -> writes a message when asked (?)
     int returnCode;
     char buffer[256];
     memset(buffer, 0, 256);
     strcpy(buffer, message);
-    returnCode = write(socketFd,buffer,strlen(buffer));
+    returnCode = write(socketFd, buffer, strlen(buffer));
     if (returnCode < 0)
         error("NetworkService::sendMessageToSocket ---- ERROR writing to socket");
     return returnCode;
 }
 
-char* NetworkService::readMessageFromSocket(int socketFd){
+int NetworkService::readMessageFromSocket(int socketFd, char *buffer, const int length) {
     int returnCode;
-    char buffer[256];
-    memset(buffer, 0, 256);
-    returnCode = read(socketFd,buffer,255);
+    //char buffer[256];
+    //memset(buffer, 0, 256);
+    returnCode = read(socketFd, buffer, length);
     if (returnCode < 0)
         error("NetworkService::readMessageFromSocket ---- ERROR reading from socket");
-    else
-        return buffer;
+    return returnCode;
 }
 
 NetworkService::NetworkService() {};
+
 NetworkService::~NetworkService() {};

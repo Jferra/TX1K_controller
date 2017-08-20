@@ -27,7 +27,7 @@
 void setupColorThread() {
 
     int socketFileDescriptor;
-    char* messageReceived;
+    char messageReceived[256];
 
     // setup hardware
     setupPins();
@@ -40,28 +40,30 @@ void setupColorThread() {
     color_index = 0;
 
     // Set LEDs default colors
-    int colors[4] = { RED_COLOR, MAGENTA_COLOR, BLUE_COLOR, WHITE_COLOR };
+    int colors[4] = {RED_COLOR, MAGENTA_COLOR, BLUE_COLOR, WHITE_COLOR};
     setLEDColors(colors);
 
     std::cout << "Color::setupColorThread ---- Setup Colors completed." << std::endl;
 
-    while(isColorThreadRunning){
-        messageReceived = NetworkService::readMessageFromSocket(socketFileDescriptor);
+    while (isColorThreadRunning) {
+        if (NetworkService::readMessageFromSocket(socketFileDescriptor, messageReceived, 256) < 0) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            continue;
+        }
         std::cout << "Color::setupColorThread ---- Message received from Socket !"
                   << messageReceived << std::endl;
-
         scan();
 
-        if(led_index == 4){
+        if (led_index == 4) {
             led_index = 0;
         }
-        if(color_index == 2){
+        if (color_index == 2) {
             led_index++;
         }
 
         color_index++;
 
-        if(color_index == 3){
+        if (color_index == 3) {
             color_index = 0;
         }
     }
@@ -72,15 +74,13 @@ void setupColorThread() {
  * Initialize the LEDs Pins
  * @method setupPins
  */
-static void setupPins()
-{
+static void setupPins() {
     uint8_t i;
 
     // initialize all of the output pins
 
     // LED column lines
-    for(i = 0; i < NUM_LED_COLUMNS; i++)
-    {
+    for (i = 0; i < NUM_LED_COLUMNS; i++) {
         pinMode(ledcolumnpins[i], OUTPUT);
 
         // with nothing selected by default
@@ -88,8 +88,7 @@ static void setupPins()
     }
 
     // LED row lines
-    for(i = 0; i < NUM_COLORS; i++)
-    {
+    for (i = 0; i < NUM_COLORS; i++) {
         pinMode(colorpins[i], OUTPUT);
 
         // with nothing driven by default
@@ -101,15 +100,13 @@ static void setupPins()
  * Loops through the available LEDs to light them one by one.
  * @method scan
  */
-static void scan()
-{
+static void scan() {
     // Select a column
     digitalWrite(ledcolumnpins[led_index], LOW);
 
     // write the row pins
-    if(LED_colors[led_index][color_index])
-    {
-        switch(color_index){
+    if (LED_colors[led_index][color_index]) {
+        switch (color_index) {
             case 0:
                 digitalWrite(RED_PIN, HIGH);
                 break;
@@ -124,7 +121,7 @@ static void scan()
 
     delay(1);
 
-    digitalWrite(ledcolumnpins[led_index], HIGH);	//deselect current column
+    digitalWrite(ledcolumnpins[led_index], HIGH);    //deselect current column
 
     digitalWrite(colorpins[color_index], LOW);
 }
@@ -134,20 +131,17 @@ static void scan()
  * @method setLEDColors
  * @param colors
  */
-static void setLEDColors(int colors[4])
-{
+static void setLEDColors(int colors[4]) {
     uint8_t i;
     uint8_t j;
 
-    for(i = 0; i < NUM_LED_COLUMNS; i++)
-    {
+    for (i = 0; i < NUM_LED_COLUMNS; i++) {
         // Reset all values to false
-        for(j = 0; j < NUM_COLORS; j++)
-        {
+        for (j = 0; j < NUM_COLORS; j++) {
             LED_colors[i][j] = false;
         }
 
-        switch(colors[i]){
+        switch (colors[i]) {
             case RED_COLOR:
                 LED_colors[i][0] = true;
                 break;
