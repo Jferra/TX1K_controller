@@ -21,6 +21,7 @@
 #define WHITE_COLOR (6)
 
 
+//todo put in Utils
 template<typename Out>
 void split(const std::string &s, char delim, Out result) {
     std::stringstream ss;
@@ -32,6 +33,7 @@ void split(const std::string &s, char delim, Out result) {
 }
 
 
+//todo put in Utils
 std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, std::back_inserter(elems));
@@ -97,7 +99,8 @@ void setupColorThread() {
 
             std::cout << "=========" << std::endl;
 
-            int *intColors = getIntColors(array);
+            int intColors[4];
+            getIntColors(array, intColors);
             // int intColors[4] = {2, 2, 2, 2};
             debugArray(intColors, 4);
 
@@ -115,6 +118,7 @@ void setupColorThread() {
     std::cout << "Color::setupColorThread ---- Color process ended." << std::endl;
 }
 
+//todo put in Utils
 void debugArray(std::string * arr, int ito) {
     std::string* it(0);
     int c = 0;
@@ -125,6 +129,7 @@ void debugArray(std::string * arr, int ito) {
     } while (c < ito);
 }
 
+//todo put in Utils
 void debugArray(int * arr, int ito) {
     int * it(0);
     int c = 0;
@@ -135,16 +140,16 @@ void debugArray(int * arr, int ito) {
     } while (c < ito);
 }
 
-int* getIntColors(std::string * arr) {
-    int res[4];
+//todo put in Utils
+void getIntColors(std::string * arr, int * resArray) {
+    //int res[4];
     std::string* it(0);
     int c = 0;
     do  {
         it = &arr[c];
-        res[c] = stoi(*it);
+        resArray[c] = stoi(*it);
         ++c;
     } while (c < 4);
-    return &res[0];
 }
 
 /**

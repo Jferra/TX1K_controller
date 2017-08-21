@@ -50,7 +50,7 @@ static bool isColorThreadRunning = true;
 
 void debugArray(std::string * arr, int it);
 void debugArray(int * arr, int it);
-int* getIntColors(std::string * arr);
+void getIntColors(std::string * arr, int * resArray);
 
 
 template<typename Out>
