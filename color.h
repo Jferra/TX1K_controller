@@ -13,7 +13,6 @@
 #include <wiringPi.h>
 #include <sstream>
 #include <vector>
-#include <sys/ioctl.h>
 #include "NetworkService.h"
 
 #define NUM_LED_COLUMNS (4)
@@ -33,7 +32,7 @@
 #define WHITE_COLOR (6)
 
 #define COLOR_SOCKET_ADR    "127.0.0.1"
-#define COLOR_SOCKET_PORT   45003
+#define COLOR_SOCKET_PORT   45001
 static bool LED_colors[NUM_LED_COLUMNS][NUM_COLORS];    // Mapping grid of LED colors
 
 static uint8_t led_index;

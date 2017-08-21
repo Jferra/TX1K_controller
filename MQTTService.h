@@ -14,7 +14,6 @@ extern "C" {
     #include <cstdlib>
     #include <cstring>
     #include <cctype>
-    //#include <MQTTClient.h>
 }
 #include <string>
 #include <thread>
@@ -33,7 +32,7 @@ const char * const BROKER_ADDRESS = "tcp://37.187.245.213:1883";
 #define TIMEOUT     10000L
 
 const char * const COLOR_SOCKET_ADR = "127.0.0.1";
-#define COLOR_SOCKET_PORT   45003
+#define COLOR_SOCKET_PORT   45001
 
 
 class MQTTService {
@@ -56,7 +55,6 @@ public:
      * MQTTService Constructor
      * @method MQTTService
      */
-    //MQTTService(char* brokerAddress, char* pClientID);
     MQTTService();
     virtual ~MQTTService();
 

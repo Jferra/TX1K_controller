@@ -137,15 +137,18 @@ int NetworkService::sendMessageToSocket(int socketFd, const char *message) {
 }
 
 int NetworkService::readMessageFromSocket(int socketFd, char *buffer, const int length) {
-    std::cout << "NetworkService::readMessageFromSocket ---- Reading message from socket... "
-              << std::endl;
-    int returnCode;
-    //char buffer[256];
-    //memset(buffer, 0, 256);
-    returnCode = read(socketFd, buffer, length);
-    if (returnCode < 0)
-        error("NetworkService::readMessageFromSocket ---- ERROR reading from socket");
-    return returnCode;
+    int count;
+    ioctl(socketFd, FIONREAD, &count);
+
+    if (count > 0) {
+        std::cout << "NetworkService::readMessageFromSocket ---- Reading message from socket... "
+                  << std::endl;
+        int returnCode;
+        returnCode = read(socketFd, buffer, length);
+        if (returnCode < 0)
+            error("NetworkService::readMessageFromSocket ---- ERROR reading from socket");
+        return returnCode;
+    }
 }
 
 NetworkService::NetworkService() {};

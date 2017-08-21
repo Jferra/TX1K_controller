@@ -84,11 +84,9 @@ void setupColorThread() {
             color_index = 0;
         }
 
-        int count;
-        ioctl(socketFileDescriptor, FIONREAD, &count);
+        msgReturnCode = NetworkService::readMessageFromSocket(socketFileDescriptor, messageReceived, 256);
 
-        if (count > 0) {
-            msgReturnCode = NetworkService::readMessageFromSocket(socketFileDescriptor, messageReceived, 256);
+        if (msgReturnCode > 0) {
             std::cout << "Color::setupColorThread ---- read in socket"
                       << messageReceived
                       << std::endl;
@@ -101,18 +99,11 @@ void setupColorThread() {
 
             int intColors[4];
             getIntColors(array, intColors);
-            // int intColors[4] = {2, 2, 2, 2};
+
             debugArray(intColors, 4);
 
             setLEDColors(intColors);
         }
-        //if (NetworkService::readMessageFromSocket(socketFileDescriptor, messageReceived, 256) < 0) {
-            //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            //std::this_thread::sleep_for(std::chrono::milliseconds(200));
-            //continue;
-        //}
-        /*std::cout << "Color::setupColorThread ---- Message received from Socket !"
-                  << messageReceived << std::endl;*/
 
     }
     std::cout << "Color::setupColorThread ---- Color process ended." << std::endl;
