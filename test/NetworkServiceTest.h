@@ -7,16 +7,17 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class NetworkServiceTest : public CppUnit::TestCase
+class NetworkServiceTest : public CppUnit::TestFixture
 {
-public:
-    PseudoTest( std::string name ) : CppUnit::TestCase( name ) {}
+    CPPUNIT_TEST_SUITE( NetworkServiceTest );
+    CPPUNIT_TEST( testSocketMessageReception );
+    CPPUNIT_TEST_SUITE_END();
 
-    void runTest()
-    {
-        CPPUNIT_ASSERT( 1 == 1 );
-        CPPUNIT_ASSERT( !(1 == 2) );
-    }
+public:
+    void setUp();
+    void tearDown();
+
+    void testSocketMessageReception();
 };
 
 #endif //CONTROLLER_NETWORKSERVICETEST_H

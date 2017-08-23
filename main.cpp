@@ -12,11 +12,11 @@ int main() {
     wiringPiSetup();    // Setup Pins using wiringPi mapping
 
     std::thread colorThread(setupColorThread);
-    //std::thread buttonThread(setupButtonThread);
+    std::thread buttonThread(setupButtonThread);
     std::thread mqttServiceThread(std::bind(&MQTTService::startMQTTServiceThread, mqttService));
 
     colorThread.join();
-    //buttonThread.join();
+    buttonThread.join();
     mqttServiceThread.join();
 
 

@@ -35,7 +35,9 @@ set(SOURCE_FILES
         ${INCLUDE_DIR}/jsoncpp.cpp
         ${TEST_DIR}/test.cpp
         ${TEST_DIR}/NetworkServiceTest.h
-        ${TEST_DIR}/NetworkServiceTest.cpp)
+        ${TEST_DIR}/NetworkServiceTest.cpp
+        ${TEST_DIR}/ColorTest.h
+        ${TEST_DIR}/ColorTest.cpp)
 
 FIND_LIBRARY(CPPUNIT_LIBRARY cppunit
         ${CPPUNIT_INCLUDE_DIR}/../lib
